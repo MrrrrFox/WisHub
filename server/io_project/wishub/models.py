@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User #is it making a proper table?
+# from django.contrib.auth.models import User #is it making a proper table?
+from users.models import CustomUser
 
 # Create your models here.
 
@@ -33,7 +34,7 @@ class Post(models.Model):
         ('AD', 'Advanced'),
     )
     #TO DO: related_name argument for author? To add or not?
-    author = models.ForeignKey(User, on_delete = models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     link = models.CharField(max_length=100, default=None) #TO DO: Some validation?
     description = models.TextField(max_length = 300)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)#TO DO: add unique=true (later)
