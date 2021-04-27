@@ -14,8 +14,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
+import axios from "../../axios.config";
 
-function Copyright() {
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
@@ -65,27 +66,22 @@ const SignIn = () => {
   }, []);
 
   const handleLogin = (user) => {
-      console.log(user)
-
-      //fetch('http://127.0.0.1:8000/api/v1/users/auth/login/', {
-        fetch('', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
+    console.log(user)
+    axios.post('v1/users/auth/login/',user)
+      .then(res => {
+        if(res.status === 200){
+          console.log(res.data.key)
+          localStorage.clear();
+          localStorage.setItem('isLogged', res.data.key);
+          history.push("/")
+        }
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.key) {
-            localStorage.clear();
-            localStorage.setItem('isLogged', data.key);
-            history.push("/");
-          } else {
-            localStorage.clear();
-            setErrors(true);
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data);
           }
-        });
+      });
+
     };
 
   return (
@@ -154,7 +150,7 @@ const SignIn = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
