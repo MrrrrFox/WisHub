@@ -95,11 +95,6 @@ DATABASES = {
 #     }
 # }
 
-
-
-#[Place for Project Database in postgres]
-#[TO DO: estabilishing connection with the Elephant here]
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
