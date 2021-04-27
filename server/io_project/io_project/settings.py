@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     # local apps
     'users',
+    'wishub'
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,19 @@ DATABASES = {
     }
 }
 
+#Postgres
+#This ones below will be connection to postgtres on elephantsql
+#TO DO: Set this as an environment variable
+# DATABASES = {
+#     'default':{
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'pwvzyrof',
+#         'USER': 'pwvzyrof',
+#         'PASSWORD': 'C9dYbvgvKfZxOxM_81R_P6C4nuFcn0hT',
+#         'HOST': 'hattie.db.elephantsql.com',
+#         'PORT': '5432'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
