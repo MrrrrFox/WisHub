@@ -23,8 +23,8 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now = True)
     level = models.CharField(max_length = 15, choices = ADVANCEMENT_LEVEL,
                              default = 'BE')
-    num_upvoted = models.IntegerField()
-    num_downvoted = models.IntegerField()
+    num_upvoted = models.IntegerField(default=0)
+    num_downvoted = models.IntegerField(default=0)
 
 class Meta:
     ordering = ( '-publish' )
