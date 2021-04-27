@@ -26,7 +26,7 @@ SECRET_KEY = '124nmy85yh^-b!msbgl&fk7yi3q*j$%(@er!+-3=)ea8d*#o^f'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'http://localhost:3000',
+    '127.0.0.1',
     'localhost',
 ]
 
@@ -42,31 +42,34 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party
-    'rest_framework', # new
-    'rest_framework.authtoken', # new
-    'rest_auth', # new
-    'django.contrib.sites', # new
-    'allauth', # new
-    'allauth.account', # new
-    'allauth.socialaccount', # new
-    'rest_auth.registration', # new
-    'corsheaders', # new
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
+    'corsheaders',
 
     # local apps
-    'users', # new
+    'users',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    ## 3rd party
-    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = 'io_project.urls'
@@ -163,3 +166,4 @@ REST_FRAMEWORK = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

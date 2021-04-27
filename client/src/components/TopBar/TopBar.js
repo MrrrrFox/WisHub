@@ -2,7 +2,8 @@ import React from 'react';
 import { makeStyles, Grid, Typography, Button } from '@material-ui/core';
 import logo from '../../icons/logo.png';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
+import axios from "../../axios.config";
+import {useHistory} from 'react-router-dom'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -44,9 +45,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({username}) => {
+const TopBar = ({isLogged, setLogged}) => {
   const classes = useStyles();
-
+  const history = useHistory()
+  const logoutUser = () => {
+    axios.post('v1/users/auth/logout/',{"Authorization": isLogged})
+      .then(res => {
+        console.log(res)
+        if(res.status === 200){
+          localStorage.clear();
+          setLogged(null)
+          history.push("/")
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response);
+          }
+      });
+  }
   return (
     <Grid className={classes.wrapper} container justify="space-between">
       <div className={classes.logo} />
@@ -57,16 +74,17 @@ const TopBar = ({username}) => {
         <Grid direction="column" className={classes.userSection}>
           <div>
             <Typography variant="body4" className={classes.user}>
-              {username ? `Hello, ${username}!` : 'Guest'}
+              {'Guest'}
             </Typography>
             <div className={classes.iconWrapper}>
               <AccountCircleIcon></AccountCircleIcon>
             </div>
           </div>
-          {username ? (
+          {console.log(localStorage.getItem('isLogged'))}
+          {isLogged !== null ? (
             <Button
               className={classes.loginButton}
-              onClick={() => localStorage.setItem('isLogged', 'false')}
+              onClick={() => logoutUser()}
               color="secondary"
             >
               Logout

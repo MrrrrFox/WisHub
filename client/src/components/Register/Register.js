@@ -1,14 +1,9 @@
-import React, { useState, useEffect} from 'react'; 
-import Avatar from '@material-ui/core/Avatar';
+import React, { useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -49,56 +44,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = () => {
+const Register = () => {
   const { handleSubmit, control } = useForm();
   const classes = useStyles();
   const history = useHistory();
 
-  const [errors, setErrors] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (localStorage.getItem('isLogged') !== null) {
-        history.push("/");
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const handleLogin = (user) => {
+  const handleRegister = (user) => {
     console.log(user)
-    axios.post('v1/users/auth/login/',user)
+
+    axios.post('v1/users/auth/register/',user)
       .then(res => {
-        if(res.status === 200){
-          console.log(res.data.key)
-          localStorage.clear();
-          localStorage.setItem('isLogged', res.data.key);
-          history.push("/")
+        if(res.status === 201){
+          history.push("/signin")
         }
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data);
+          console.log(error.response.data); // => the response payload
           }
       });
 
-    };
+  };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+
         <Typography component="h1" variant="h5">
-          Sign in
+          Register
         </Typography>
         <FormProvider { ...handleSubmit }>
         <form
-          onSubmit = {handleSubmit(handleLogin)}
+          onSubmit = {handleSubmit(handleRegister)}
           className={classes.form}
-        >
+        >          <Controller
+            render = {({field})=> (
+                <TextField {...field}
+                    fullWidth
+                    label="User Name"
+                    required
+                    onChange={(e) => field.onChange(e)}
+                    value={field.value}
+                />
+            )}
+            name="username"
+            control={control}
+            defaultValue=""
+            label="User Name"
+          />
           <Controller
             render = {({field})=> (
                 <TextField {...field}
@@ -114,26 +109,40 @@ const SignIn = () => {
             defaultValue=""
             label="Email Address"
           />
-            
+
           <Controller
             render = {({field})=> (
                 <TextField {...field}
-                    fullWidth
-                    label="Password"
-                    type="password"
-                    required
-                    onChange={(e) => field.onChange(e)}
-                    value={field.value}
+                           fullWidth
+                           label="Password"
+                           type="password"
+                           required
+                           onChange={(e) => field.onChange(e)}
+                           value={field.value}
+                           inputProps={{ minLength: 8 }}
                 />
             )}
-            name="password"
+            name="password1"
             control={control}
             defaultValue=""
             />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+            <Controller
+            render = {({field})=> (
+                <TextField {...field}
+                           fullWidth
+                           label="Confirm Password"
+                           type="password"
+                           required
+                           onChange={(e) => field.onChange(e)}
+                           value={field.value}
+                           inputProps={{ minLength: 8 }}
+                />
+            )}
+            name="password2"
+            control={control}
+            defaultValue=""
+            />
+
           <Button
             type="submit"
             fullWidth
@@ -143,18 +152,6 @@ const SignIn = () => {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </form>
         </FormProvider>
       </div>
@@ -165,4 +162,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Register;
