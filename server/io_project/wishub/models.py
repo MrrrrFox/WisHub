@@ -1,33 +1,51 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User #is it making a proper table?
+
 # Create your models here.
 
-#Is it necessary or handled automatically?
-# class User(models.Model):
-#     first_name = models.CharField(max_length=40)
-#     last_name = models.CharField(max_length=40)
+
+class Domain(models.Model):
+    '''Represents a domain e.g. Programming or Maths, which groups subjects '''
+
+    title = models.CharField(max_length=30)
+
+    def __str__(self):
+        return(self.title)
+
+
+class Subject(models.Model):
+    '''Represents a patricular subject to learn, e.g. Django or heapsort'''
+
+    title = models.CharField(max_length=30)
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE, blank=True, null=True) #TO DO: add unique=true (later)
+
+    def __str__(self):
+        return(self.title)
+
 
 class Post(models.Model):
+    '''Represents a singular post with a link to some learning materials'''
 
     ADVANCEMENT_LEVEL = (
         ('BE', 'Beginer'),
         ('IN', 'Intermediate'),
         ('AD', 'Advanced'),
     )
-    #related_name argument for author?
+    #TO DO: related_name argument for author? To add or not?
     author = models.ForeignKey(User, on_delete = models.CASCADE)
     link = models.CharField(max_length=100, default=None) #TO DO: Some validation?
     description = models.TextField(max_length = 300)
-    created = models.DateTimeField(auto_now_add = True)
-    updated = models.DateTimeField(auto_now = True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)#TO DO: add unique=true (later)
     level = models.CharField(max_length = 15, choices = ADVANCEMENT_LEVEL,
                              default = 'BE')
+    created = models.DateTimeField(auto_now_add = True)
+    updated = models.DateTimeField(auto_now = True)
     num_upvoted = models.IntegerField(default=0)
     num_downvoted = models.IntegerField(default=0)
 
-class Meta:
-    ordering = ( '-publish' )
+    def __str__(self):
+        return(self.description)
 
-def __str__(self):
-    return(self.description)
+    class Meta:
+        ordering = ( '-created', )
