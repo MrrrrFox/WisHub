@@ -4,6 +4,7 @@ import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
+import Login from './components/Login';
 
 
 const App = () => {
@@ -21,13 +22,13 @@ const App = () => {
   useEffect(() => {
     fetchFields();
   }, []);
-
+  
   return (
     <BrowserRouter>
       <Switch>
           {/* TODO routes to posts*/}
           {/*TODO add component Login*/}
-        <Route exact path="/signin"/>
+        <Route exact path="/signin" component={Login}/>
       </Switch>
       <CssBaseline />
       <div className="App">
