@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wishub'
+    'rest_framework',
+    'wishub',
 ]
 
 MIDDLEWARE = [
