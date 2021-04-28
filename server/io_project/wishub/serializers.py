@@ -18,4 +18,4 @@ class SubjectSerializer(ModelSerializer):
 class DomainSerializer(ModelSerializer):
     class Meta:
         model = Domain
-        fields = ('title')
+        fields = ('title',)
