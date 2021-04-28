@@ -3,7 +3,7 @@ from .models import Post, Subject, Domain
 
 #Adding more fancy Admin views
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('description', 'link', 'author',
+    list_display = ('id', 'description', 'link', 'author',
                     'subject', 'level', 'created',
                     'num_upvoted', 'num_downvoted')
     list_filter = ('created', 'num_upvoted', 'level', 'author')
@@ -11,11 +11,11 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ['-num_upvoted', '-created']
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'domain')
+    list_display = ('id', 'title', 'domain')
     list_filter = ('domain',)
 
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('title', )
+    list_display = ('id', 'title', )
 
 # Register your models here.
 admin.site.register(Post, PostAdmin)
