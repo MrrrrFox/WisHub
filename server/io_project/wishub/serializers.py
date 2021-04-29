@@ -1,11 +1,14 @@
 from rest_framework.serializers import ModelSerializer
-
+from datetime import datetime
 from .models import Post, Subject, Domain
 
 class PostSerializer(ModelSerializer):
+
     class Meta:
         model = Post
-        fields = ('id', 'author', 'link', 'description', 'subject')
+        #TO DO: Add serializaion of dates
+        fields = ('id', 'author', 'link', 'description', 'subject', 'level',
+                'num_upvoted', 'num_downvoted' )
 
 
 class SubjectSerializer(ModelSerializer):
