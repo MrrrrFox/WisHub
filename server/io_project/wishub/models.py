@@ -19,7 +19,8 @@ class Subject(models.Model):
     '''Represents a patricular subject to learn, e.g. Django or heapsort'''
 
     title = models.CharField(max_length=30)
-    domain = models.ForeignKey(Domain, on_delete=models.CASCADE, blank=True, null=True) #TO DO: add unique=true (later)
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE,
+                        blank=True, null=True) #TO DO: add unique=true (later)
 
     def __str__(self):
         return(self.title)
@@ -37,7 +38,8 @@ class Post(models.Model):
     author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     link = models.CharField(max_length=100, default=None) #TO DO: Some validation?
     description = models.TextField(max_length = 300)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)#TO DO: add unique=true (later)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE,
+                    blank=True, null=True)#TO DO: add unique=true (later)
     level = models.CharField(max_length = 15, choices = ADVANCEMENT_LEVEL,
                              default = 'BE')
     created = models.DateTimeField(auto_now_add = True)
@@ -45,7 +47,7 @@ class Post(models.Model):
     num_upvoted = models.IntegerField(default=0)
     num_downvoted = models.IntegerField(default=0)
 
-    def __str__(self):
+    def __str__(self): #TO DO: This one should be changed to sth shorter
         return(self.description)
 
     class Meta:
