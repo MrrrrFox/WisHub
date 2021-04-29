@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = ({
   collapseDuration = '300ms',
-  fields = null,
+  fields = null
   }) => {
   const [collapseContent, setCollapseContent] = useState('');
   const classes = useStyles();
@@ -34,7 +34,7 @@ const Navbar = ({
     const url = name.toLowerCase();
     history.push(url);
   };
-
+  fields = [{'fieldID': 0, 'name': "Programming"}, {'fieldID': 1, 'name': "Maths"}, {'fieldID': 2, 'name': "Physics"}]
   return (
     <nav className={classes.nav} onMouseLeave={() => setCollapseContent('')}>
       <Grid
@@ -44,7 +44,8 @@ const Navbar = ({
         justify="space-around"
         alignContent="center"
       >
-        {fields===true &&
+        {console.log(fields===true)}
+        {
           fields.map(({ fieldId, name }) => (
             <NavItem
               onClick={() => handleNavItemClick(fieldId, name)}
@@ -62,7 +63,7 @@ const Navbar = ({
           <CollapseSection
             handleClick={handleNavItemClick}
             domain={collapseContent}
-            fields={fields}
+            // fields={fields}
           />
         )}
       </Collapse>

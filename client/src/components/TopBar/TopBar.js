@@ -82,13 +82,23 @@ const TopBar = ({isLogged, setLogged}) => {
           </div>
           {console.log(localStorage.getItem('isLogged'))}
           {isLogged !== null ? (
-            <Button
+            <>
+              <Button
               className={classes.loginButton}
               onClick={() => logoutUser()}
               color="secondary"
-            >
-              Logout
-            </Button>
+              >
+                Logout
+              </Button>
+              <Button
+              className={classes.loginButton}
+              href="/post-add"
+              color="secondary"
+              >
+                Add post
+              </Button>
+            </>
+
           ) : (
             <Button
               className={classes.loginButton}
