@@ -20,8 +20,8 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    @action(methods=['get'], detail=True, url_path='by-domain',
-        url_name='by_domain')
+    @action(methods=['get'], detail=True, url_path='by-subject',
+        url_name='by_subject')
     def get_by_subject_id(self, request, pk=None):
         queryset = Post.objects.filter(subject = pk)
         serializer = PostSerializer(queryset, many=True)
