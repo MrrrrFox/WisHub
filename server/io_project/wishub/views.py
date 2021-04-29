@@ -58,7 +58,7 @@ def my_view(request):
 
 # After Szumlak:
 def post_detail(request, year, month, day, post):
-    '''Getting the post info by passing creation dates'''
+    """Getting the post info by passing creation dates"""
 
     post = get_object_or_404(Post,
                              created__year=year,

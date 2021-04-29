@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -29,7 +28,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
 ]
-
 
 # Application definition
 
@@ -69,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-#This one here is for React
+# This one here is for communication between frontend and backend
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
@@ -94,7 +92,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'io_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -105,9 +102,9 @@ DATABASES = {
     }
 }
 
-#Postgres
-#This ones below will be connection to postgtres on elephantsql
-#TO DO: Set this as an environment variable
+# Postgres
+# This ones below will be connection to postgtres on elephantsql
+# TO DO: Set this as an environment variable
 # DATABASES = {
 #     'default':{
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -137,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -151,14 +147,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
-
-## new
+# new
 AUTH_USER_MODEL = 'users.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
@@ -171,12 +165,12 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_UNIQUE_EMAIL = True# Rest Framework config. Add all of this.
+ACCOUNT_UNIQUE_EMAIL = True  # Rest Framework config. Add all of this.
 
 REST_FRAMEWORK = {
-'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
-'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework.authentication.TokenAuthentication',
+    'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 

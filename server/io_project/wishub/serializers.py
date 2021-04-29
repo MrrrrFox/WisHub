@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 
 from .models import Post, Subject, Domain
 
+
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
