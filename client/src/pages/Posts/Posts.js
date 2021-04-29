@@ -27,11 +27,9 @@ const Posts = () => {
   const { id } = useParams();
 
   const fetchPosts = () => {
-    console.log(id)
     axios.get(`v1/wishub/posts/${id}/by-subject`)
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
           setPosts(res.data)
         }
       })

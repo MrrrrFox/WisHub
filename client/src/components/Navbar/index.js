@@ -32,7 +32,6 @@ const Navbar = ({
     axios.get('v1/wishub/domains/')
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
           setDomains(res.data)
         }
       })
