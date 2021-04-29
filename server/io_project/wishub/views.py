@@ -7,9 +7,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import viewsets
 
+
 # Create your views here.
 
-#After tutorial:
+# After tutorial:
 class PostViewSet(viewsets.ModelViewSet):
     '''ViewSet class for the Posts
 
@@ -21,11 +22,12 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     @action(methods=['get'], detail=True, url_path='by-subject',
-        url_name='by_subject')
+            url_name='by_subject')
     def get_by_subject_id(self, request, pk=None):
-        queryset = Post.objects.filter(subject = pk)
+        queryset = Post.objects.filter(subject=pk)
         serializer = PostSerializer(queryset, many=True)
         return JsonResponse(serializer.data, safe=False)
+
 
 class SubjectViewSet(viewsets.ModelViewSet):
     '''ViewSet class for the Subjects
@@ -37,29 +39,31 @@ class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
 
     @action(methods=['get'], detail=True, url_path='by-domain',
-        url_name='by_domain')
+            url_name='by_domain')
     def get_by_domain_id(self, request, pk=None):
-        queryset = Subject.objects.filter(domain = pk)
+        queryset = Subject.objects.filter(domain=pk)
         serializer = SubjectSerializer(queryset, many=True)
         return JsonResponse(serializer.data, safe=False)
+
 
 class DomainViewSet(viewsets.ModelViewSet):
     queryset = Domain.objects.all()
     serializer_class = DomainSerializer
 
 
-#example view
+# example view
 def my_view(request):
     return HttpResponse('<h1>Page was found</h1>')
 
-#After Szumlak:
+
+# After Szumlak:
 def post_detail(request, year, month, day, post):
     '''Getting the post info by passing creation dates'''
 
     post = get_object_or_404(Post,
-    created__year=year,
-    created__month=month,
-    created__day=day)
+                             created__year=year,
+                             created__month=month,
+                             created__day=day)
     return render(request,
-            'wishub/post/detail.html',
-             {'post': post})
+                  'wishub/post/detail.html',
+                  {'post': post})

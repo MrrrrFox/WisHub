@@ -10,19 +10,12 @@ import withTheme from './hoc/withTheme';
 const App = () => {
  const initUserLogged = localStorage.getItem('isLogged') || 'false';
   const [isLogged, setLogged] = useState(initUserLogged)
-  const [fields, setFields] = useState(null)
+
   window.addEventListener('storage',  () => {
     setLogged(localStorage.getItem('isLogged') );
   });
 
-  const fetchFields = () => {
 
-  }
-
-  useEffect(() => {
-    fetchFields();
-  }, []);
-  
   return (
     <BrowserRouter>
       <Switch>
@@ -35,7 +28,7 @@ const App = () => {
       <CssBaseline />
       <div className="App">
         <TopBar isLogged = {isLogged} setLogged={setLogged}/>
-        <Navbar fields={fields}/>
+        <Navbar/>
       </div>
     </BrowserRouter>
   );
