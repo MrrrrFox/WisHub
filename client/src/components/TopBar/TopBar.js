@@ -51,7 +51,6 @@ const TopBar = ({isLogged, setLogged}) => {
   const logoutUser = () => {
     axios.post('v1/users/auth/logout/',{"Authorization": isLogged})
       .then(res => {
-        console.log(res)
         if(res.status === 200){
           localStorage.clear();
           setLogged(null)

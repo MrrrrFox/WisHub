@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {TopBar, Navbar, Login, Register, PostAdder} from './components';
 import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-
+import {Posts} from './pages'
 
 
 const App = () => {
@@ -24,6 +24,7 @@ const App = () => {
         <Route exact path="/signin" component={Login}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/post-add" component={PostAdder}/>
+        <Route path="/posts/:id" component={Posts}/>
       </Switch>
       <CssBaseline />
       <div className="App">

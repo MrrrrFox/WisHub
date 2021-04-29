@@ -48,9 +48,8 @@ const Navbar = ({
   }, []);
 
   const history = useHistory()
-  const handleNavItemClick = (tagId, name) => {
-    const url = name.toLowerCase();
-    history.push(url);
+  const handleNavItemClick = (subjectId) => {
+    history.push(`/posts/${subjectId}`);
   };
   return (
     <nav className={classes.nav} onMouseLeave={() => setCollapseContent('')}>
@@ -65,10 +64,10 @@ const Navbar = ({
           domains.map(({ id, title }) => (
 
             <NavItem
-              onClick={() => handleNavItemClick(id, title)}
+              onClick={() => handleNavItemClick(id)}
               key={id}
               onMouseOver={() => setCollapseContent(id)}
-              title={ id}
+              title={ title}
             />
           ))}
       </Grid>

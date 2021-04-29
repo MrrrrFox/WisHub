@@ -39,16 +39,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { text, link, upvoted, downvoted, comments, user } = props.post;
-  const [upCount, setUpCount] = useState(upvoted);
-  const incrementCount = () => {
-    setUpCount(upCount + 1);
-  };
+  let { description, link, author } = props.post;
+  // const [upCount, setUpCount] = useState(upvoted);
+  // const incrementCount = () => {
+  //   setUpCount(upCount + 1);
+  // };
 
-  const [downCount, setDownCount] = useState(downvoted);
-  const decrementCount = () => {
-    setDownCount(downCount - 1);
-  };
+  // const [downCount, setDownCount] = useState(downvoted);
+  // const decrementCount = () => {
+  //   setDownCount(downCount - 1);
+  // };
 
   const classes = useStyles();
 
@@ -63,26 +63,26 @@ const LinkBox = (props) => {
               href={link}
               className={classes.link}
             >
-              {text}
+              {description}
             </Fab>
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {link}
           </Typography>
         </CardContent>
-        <Button onClick={incrementCount}>
-          <NavigationIcon className={classes.extendedIcon} />+{upCount}
-        </Button>
-        <Button onClick={decrementCount}>
-          <NavigationIcon className={classes.transformation} />
-          {downCount}
-        </Button>
-        <Button>
-          <ChatBubbleOutlineIcon className={classes.extendedIcon} />
-          {comments.length}
-        </Button>
+        {/*<Button onClick={incrementCount}>*/}
+        {/*  <NavigationIcon className={classes.extendedIcon} />+{upCount}*/}
+        {/*</Button>*/}
+        {/*<Button onClick={decrementCount}>*/}
+        {/*  <NavigationIcon className={classes.transformation} />*/}
+        {/*  {downCount}*/}
+        {/*</Button>*/}
+        {/*<Button>*/}
+        {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
+        {/*  {comments.length}*/}
+        {/*</Button>*/}
         <Typography className={classes.username} variant="h6">
-          {user[0]}
+          {author}
         </Typography>
       </Card>
     </div>

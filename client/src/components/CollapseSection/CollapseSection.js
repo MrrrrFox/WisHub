@@ -48,7 +48,7 @@ const CollapseSection = ({ domainID, handleClick }) => {
           className={classes.navOption}
           variant="h5"
           key={id}
-          onClick={() => handleClick(id, title)}
+          onClick={() => handleClick(id)}
         >
           {title}
         </Typography>

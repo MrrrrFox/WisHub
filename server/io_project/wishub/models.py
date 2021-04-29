@@ -12,22 +12,22 @@ class Domain(models.Model):
     title = models.CharField(max_length=30)
 
     def __str__(self):
-        return(self.title)
+        return self.title
 
 
 class Subject(models.Model):
-    '''Represents a patricular subject to learn, e.g. Django or heapsort'''
+    """Represents a patricular subject to learn, e.g. Django or heapsort"""
 
     title = models.CharField(max_length=30)
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE,
                         blank=True, null=True) #TO DO: add unique=true (later)
 
     def __str__(self):
-        return(self.title)
+        return self.title
 
 
 class Post(models.Model):
-    '''Represents a singular post with a link to some learning materials'''
+    """Represents a singular post with a link to some learning materials"""
 
     ADVANCEMENT_LEVEL = (
         ('BE', 'Beginer'),
@@ -48,7 +48,7 @@ class Post(models.Model):
     num_downvoted = models.IntegerField(default=0)
 
     def __str__(self): #TO DO: This one should be changed to sth shorter
-        return(self.description)
+        return self.description
 
     class Meta:
         ordering = ( '-created', )
