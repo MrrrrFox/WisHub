@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
 
     # local apps
     'users',
+    'wishub'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-
+#This one here is for React
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
@@ -103,6 +105,19 @@ DATABASES = {
     }
 }
 
+#Postgres
+#This ones below will be connection to postgtres on elephantsql
+#TO DO: Set this as an environment variable
+# DATABASES = {
+#     'default':{
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'pwvzyrof',
+#         'USER': 'pwvzyrof',
+#         'PASSWORD': 'C9dYbvgvKfZxOxM_81R_P6C4nuFcn0hT',
+#         'HOST': 'hattie.db.elephantsql.com',
+#         'PORT': '5432'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -128,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -146,24 +161,23 @@ STATIC_URL = '/static/'
 ## new
 AUTH_USER_MODEL = 'users.CustomUser'
 
-AUTHENTICATION_BACKENDS = (    
-    "django.contrib.auth.backends.ModelBackend",    
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-SITE_ID = 1 
+SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True# Rest Framework config. Add all of this.
 
-REST_FRAMEWORK = {    
-'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",    
-'DEFAULT_AUTHENTICATION_CLASSES': [        
-    'rest_framework.authentication.TokenAuthentication',    
+REST_FRAMEWORK = {
+'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
+'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
