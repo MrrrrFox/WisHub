@@ -39,16 +39,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { description, link, author } = props.post;
-  // const [upCount, setUpCount] = useState(upvoted);
-  // const incrementCount = () => {
-  //   setUpCount(upCount + 1);
-  // };
+  let { description, link, author, numDownvoted, numUpvoted } = props.post;
+  const [upCount, setUpCount] = useState(numUpvoted);
+  const incrementCount = () => {
+    setUpCount(upCount + 1);
+  };
 
-  // const [downCount, setDownCount] = useState(downvoted);
-  // const decrementCount = () => {
-  //   setDownCount(downCount - 1);
-  // };
+  const [downCount, setDownCount] = useState(numDownvoted);
+  const decrementCount = () => {
+    setDownCount(downCount - 1);
+  };
 
   const classes = useStyles();
 
@@ -70,13 +70,13 @@ const LinkBox = (props) => {
             {link}
           </Typography>
         </CardContent>
-        {/*<Button onClick={incrementCount}>*/}
-        {/*  <NavigationIcon className={classes.extendedIcon} />+{upCount}*/}
-        {/*</Button>*/}
-        {/*<Button onClick={decrementCount}>*/}
-        {/*  <NavigationIcon className={classes.transformation} />*/}
-        {/*  {downCount}*/}
-        {/*</Button>*/}
+        <Button onClick={incrementCount}>
+          <NavigationIcon className={classes.extendedIcon} />+{upCount}
+        </Button>
+        <Button onClick={decrementCount}>
+          <NavigationIcon className={classes.transformation} />
+          {downCount}
+        </Button>
         {/*<Button>*/}
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
