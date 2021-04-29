@@ -15,7 +15,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     Custom function to filter all the posts from the desired subject.
     To get all the posts from the subject e.g. with id=1, use URL like below:
-    /posts/1/by-domain/'''
+    /posts/1/by-subject/'''
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -28,8 +28,20 @@ class PostViewSet(viewsets.ModelViewSet):
         return JsonResponse(serializer.data, safe=False)
 
 class SubjectViewSet(viewsets.ModelViewSet):
+    '''ViewSet class for the Subjects
+
+    Custom function to filter all the subjects from the desired domain.
+    To get all the subjects from the domain e.g. with id=1, use URL like below:
+    /subjects/1/by-domain/'''
     queryset = Domain.objects.all()
     serializer_class = SubjectSerializer
+
+    @action(methods=['get'], detail=True, url_path='by-domain',
+        url_name='by_domain')
+    def get_by_domain_id(self, request, pk=None):
+        queryset = Subject.objects.filter(domain = pk)
+        serializer = SubjectSerializer(queryset, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 class DomainViewSet(viewsets.ModelViewSet):
     queryset = Domain.objects.all()
