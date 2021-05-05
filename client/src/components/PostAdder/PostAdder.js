@@ -9,7 +9,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
-import { FormControl, TextField, MenuItem } from "material-ui/core";
+//zle importy ->
+// import { FormControl, TextField, MenuItem } from "material-ui/core";
+import FormControl from '@material-ui/core/FormControl'
+import MenuItem from '@material-ui/core/MenuItem'
 import axios from "../../axios.config";
 
 
@@ -58,6 +61,9 @@ const Levels = [
   { value: "IN", text: "Intermediate" },
   { value: "AD", text: "Advanced" },
 ];
+//Nie mialas wogole componentu zrobionego
+const PostAdder = () => {
+
 
   const { handleSubmit, control } = useForm();
   const classes = useStyles();
@@ -108,23 +114,23 @@ const Levels = [
             defaultValue=""
             label="Author"
           />
-
-          <Controller
-            render = {({field})=> (
-                <CharField {...field}
-                    fullWidth
-                    label="Link"
-                    required
-                    onChange={(e) => field.onChange(e)}
-                    value={field.value}
-                    inputProps={{ maxLength: 100 }}
-                />
-            )}
-            name="link"
-            control={control}
-            defaultValue=""
-            label="Link"
-          />
+          {/*Skad jest CharField? tego chyba nawet w material-ui nie ma*/}
+          {/*<Controller*/}
+          {/*  render = {({field})=> (*/}
+          {/*      <CharField {...field}*/}
+          {/*          fullWidth*/}
+          {/*          label="Link"*/}
+          {/*          required*/}
+          {/*          onChange={(e) => field.onChange(e)}*/}
+          {/*          value={field.value}*/}
+          {/*          inputProps={{ maxLength: 100 }}*/}
+          {/*      />*/}
+          {/*  )}*/}
+          {/*  name="link"*/}
+          {/*  control={control}*/}
+          {/*  defaultValue=""*/}
+          {/*  label="Link"*/}
+          {/*/>*/}
 
           <Controller
             render = {({field})=> (
@@ -141,21 +147,23 @@ const Levels = [
             control={control}
             defaultValue=""
             />
-
+          {/* Popraw import*/}
+          {/* Błąd skladni z Subjects -> czemu nie używasz Select do wybrania jednej wartosci z Subjects? przeciez po to jest*/}
           <FormControl>
               <TextField
                 select
                 label="Choose one subject"
                 id="subject"
-                inputProps={{
-                  inputRef: (ref) => {
-                    if (!ref) return;
-                    Subjects({
-                      name: "Subjects",
-                      value: ref.value,
-                    });
-                  },
-                }}
+
+                // inputProps={{
+                //   inputRef: (ref) => {
+                //     if (!ref) return;
+                //     Subjects({
+                //       name: "Subjects",
+                //       value: ref.value,
+                //     });
+                //   },
+                // }}
               >
               {Subjects.map((subject) => (
                     <MenuItem key={subject.value} value={subject.value}>
@@ -164,21 +172,22 @@ const Levels = [
                 ))}
               </TextField>
           </FormControl>
-
+{/* Popraw import*/}
+          {/* Błąd skladni z Level -> czemu nie używasz Select do wybrania jednej wartosci z Subjects? przeciez po to jest*/}
           <FormControl>
               <TextField
                 select
                 label="Choose the level"
                 id="lvl"
-                inputProps={{
-                  inputRef: (ref) => {
-                    if (!ref) return;
-                    Level({
-                      name: "Level",
-                      value: ref.value,
-                    });
-                  },
-                }}
+                // inputProps={{
+                //   inputRef: (ref) => {
+                //     if (!ref) return;
+                //     Level({
+                //       name: "Level",
+                //       value: ref.value,
+                //     });
+                //   },
+                // }}
               >
               {Levels.map((level) => (
                     <MenuItem key={level.value} value={level.value}>
@@ -205,7 +214,7 @@ const Levels = [
       </Box>
     </Container>
   );
-
+}
 
 
 export default PostAdder;
