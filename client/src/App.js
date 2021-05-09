@@ -4,11 +4,11 @@ import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-import {Posts} from './pages'
+import {Posts, PostPage} from './pages'
 
 
 const App = () => {
- const initUserLogged = localStorage.getItem('isLogged') || 'false';
+  const initUserLogged = localStorage.getItem('isLogged') || null;
   const [isLogged, setLogged] = useState(initUserLogged)
 
   window.addEventListener('storage',  () => {
@@ -19,12 +19,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <Switch>
-          {/* TODO routes to posts*/}
-          {/*TODO add component Login*/}
         <Route exact path="/signin" component={Login}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/post-add" component={PostAdder}/>
         <Route path="/posts/:id" component={Posts}/>
+        <Route path="/post/:id" component={PostPage}/>
       </Switch>
       <CssBaseline />
       <div className="App">

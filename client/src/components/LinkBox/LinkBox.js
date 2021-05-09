@@ -7,10 +7,11 @@ import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-
+import { useHistory } from "react-router-dom";
 const { useState } = React;
 
 const useStyles = makeStyles((theme) => ({
+
   root: {
     '& > *': {
       margin: theme.spacing(1),
@@ -39,7 +40,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { description, link, author, numDownvoted, numUpvoted } = props.post;
+  const history = useHistory()
+  console.log(props.post)
+  let { id, description, link, author, numDownvoted, numUpvoted } = props.post;
   const [upCount, setUpCount] = useState(numUpvoted);
   const incrementCount = () => {
     setUpCount(upCount + 1);
@@ -54,7 +57,7 @@ const LinkBox = (props) => {
 
   return (
     <div className={classes.root}>
-      <Card>
+      <Card onClick={() => history.push(`/post/${id}`)}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             <Fab
