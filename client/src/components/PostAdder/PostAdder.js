@@ -10,9 +10,7 @@ import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl'
-import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel';
+import Select from 'react-select';
 import axios from "../../axios.config";
 
 
