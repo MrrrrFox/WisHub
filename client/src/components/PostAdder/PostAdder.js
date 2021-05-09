@@ -9,10 +9,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
-//zle importy ->
-// import { FormControl, TextField, MenuItem } from "material-ui/core";
+import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
+import InputLabel from '@material-ui/core/InputLabel';
 import axios from "../../axios.config";
 
 
@@ -49,17 +49,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Subjects = [
-  { value: "mathematics", text: "Mathematics" },
-  { value: "physics", text: "Physics" },
-  { value: "programming", text: "Programming" },
-  { value: "computer science", text: "Computer Science" },
+const subjects = [
+  { value: "mathematics", label: "Mathematics" },
+  { value: "physics", label: "Physics" },
+  { value: "programming", label: "Programming" },
+  { value: "computer science", label: "Computer Science" },
 ];
 
-const Levels = [
-  { value: "BE", text: "Beginer" },
-  { value: "IN", text: "Intermediate" },
-  { value: "AD", text: "Advanced" },
+const levels = [
+  { value: "BE", label: "Beginer" },
+  { value: "IN", label: "Intermediate" },
+  { value: "AD", label: "Advanced" },
 ];
 //Nie mialas wogole componentu zrobionego
 const PostAdder = () => {
@@ -99,7 +99,8 @@ const PostAdder = () => {
         <form
           onSubmit = {handleSubmit(handlePostAdder)}
           className={classes.form}
-        >          <Controller
+        >          
+          <Controller
             render = {({field})=> (
                 <TextField {...field}
                     fullWidth
@@ -113,24 +114,23 @@ const PostAdder = () => {
             control={control}
             defaultValue=""
             label="Author"
+          />      
+
+          <Controller
+            render = {({field})=> (
+                <TextField {...field}
+                           fullWidth
+                           label="Link"
+                           required
+                           onChange={(e) => field.onChange(e)}
+                           value={field.value}
+                           inputProps={{ maxLength: 100 }}
+                />
+            )}
+            name="link"
+            control={control}
+            defaultValue=""
           />
-          {/*Skad jest CharField? tego chyba nawet w material-ui nie ma*/}
-          {/*<Controller*/}
-          {/*  render = {({field})=> (*/}
-          {/*      <CharField {...field}*/}
-          {/*          fullWidth*/}
-          {/*          label="Link"*/}
-          {/*          required*/}
-          {/*          onChange={(e) => field.onChange(e)}*/}
-          {/*          value={field.value}*/}
-          {/*          inputProps={{ maxLength: 100 }}*/}
-          {/*      />*/}
-          {/*  )}*/}
-          {/*  name="link"*/}
-          {/*  control={control}*/}
-          {/*  defaultValue=""*/}
-          {/*  label="Link"*/}
-          {/*/>*/}
 
           <Controller
             render = {({field})=> (
@@ -146,56 +146,37 @@ const PostAdder = () => {
             name="description"
             control={control}
             defaultValue=""
-            />
-          {/* Popraw import*/}
-          {/* Błąd skladni z Subjects -> czemu nie używasz Select do wybrania jednej wartosci z Subjects? przeciez po to jest*/}
-          <FormControl>
-              <TextField
-                select
-                label="Choose one subject"
-                id="subject"
+          />
+         
+          <Controller
+            render = {({field})=> (
+                <Select
+                           fullWidth
+                           label="Subject"
+                           required
+                           subjects={subjects}
+                           value={subjects.find(s => s.value === value)}
+                           onChange={(e) => field.onChange(e)}
+                />
+            )}
+            name="subject"
+            control={control}
+          />
 
-                // inputProps={{
-                //   inputRef: (ref) => {
-                //     if (!ref) return;
-                //     Subjects({
-                //       name: "Subjects",
-                //       value: ref.value,
-                //     });
-                //   },
-                // }}
-              >
-              {Subjects.map((subject) => (
-                    <MenuItem key={subject.value} value={subject.value}>
-                          {subject.text}
-                    </MenuItem>
-                ))}
-              </TextField>
-          </FormControl>
-{/* Popraw import*/}
-          {/* Błąd skladni z Level -> czemu nie używasz Select do wybrania jednej wartosci z Subjects? przeciez po to jest*/}
-          <FormControl>
-              <TextField
-                select
-                label="Choose the level"
-                id="lvl"
-                // inputProps={{
-                //   inputRef: (ref) => {
-                //     if (!ref) return;
-                //     Level({
-                //       name: "Level",
-                //       value: ref.value,
-                //     });
-                //   },
-                // }}
-              >
-              {Levels.map((level) => (
-                    <MenuItem key={level.value} value={level.value}>
-                          {level.text}
-                    </MenuItem>
-                ))}
-              </TextField>
-          </FormControl>
+          <Controller
+            render = {({field})=> (
+                <Select
+                           fullWidth
+                           label="Level"
+                           required
+                           levels={levels}
+                           value={levels.find(s => s.value === value)}
+                           onChange={(e) => field.onChange(e)}
+                />
+            )}
+            name="level"
+            control={control}
+          />
 
           <Button
             type="submit"
