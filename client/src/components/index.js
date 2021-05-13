@@ -6,4 +6,4 @@ export {default as TopBar} from './TopBar'
 export {default as Login} from './Login'
 export {default as Register} from './Register'
 export {default as PostAdder} from './PostAdder'
-
+export {default as Sort} from './Sort'

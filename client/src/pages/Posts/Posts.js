@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from "react-router-dom";
 import axios from "../../axios.config";
-import { Grid, makeStyles, CircularProgress } from '@material-ui/core';
-import { LinkBox } from '../../components';
+import { Grid, makeStyles, CircularProgress, Button } from '@material-ui/core';
+import { LinkBox, Sort } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -45,17 +45,35 @@ const Posts = () => {
     fetchPosts();
   }, [id]);
 
+  const onSort = (e) => {
+    setPosts([...e]);
+    console.log(posts);
+  };
 
   return (
-<Grid
+    <Grid
+    container
+    justify="flex-start"
+    direction="row"
+    className={classes.main}
+    >
+    <Grid
       container
       justify="flex-start"
       direction="column"
-      className={classes.main}
-    >
-      {posts
-        ? posts.map((post) => <LinkBox key={post.id} post={post} />) : null
-        }
+      >
+        <Sort posts={posts} onSort={onSort}/>
+    </Grid>
+      <Grid
+        container
+        justify="flex-start"
+        direction="column"
+        id="postsList"
+      >
+        {posts
+          ? posts.map((post) => <LinkBox key={post.id} post={post} />) : null
+          }
+      </Grid>
     </Grid>
   );
 };
