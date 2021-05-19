@@ -10,6 +10,8 @@ import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import axios from "../../axios.config";
+import Avatar from '@material-ui/core/Avatar';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const Copyright = () => {
   return (
@@ -62,6 +64,19 @@ const Register = () => {
       .catch((error) => {
         if( error.response ){
           console.log(error.response.data); // => the response payload
+          var err = document.getElementById("error");
+
+          var username = error.response.data["username"];
+          var email = error.response.data["email"];
+          var pass = error.response.data["password1"];
+          var message = error.response.data["nonFieldErrors"];
+
+          typeof username !== 'undefined' ? err.innerHTML = username : 
+          typeof email !== 'undefined' ? err.innerHTML = email :
+          typeof pass !== 'undefined' ? err.innerHTML = pass :
+          typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "";
+
+          err.style.color = "red";
           }
       });
 
@@ -71,7 +86,10 @@ const Register = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-
+      <p id="error"></p>
+        <Avatar className={classes.avatar}>
+          <AddCircleOutlineIcon/>
+        </Avatar>
         <Typography component="h1" variant="h5">
           Register
         </Typography>
