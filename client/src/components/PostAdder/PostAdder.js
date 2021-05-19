@@ -46,12 +46,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const subjects = [
-  { value: "mathematics", label: "Mathematics" },
-  { value: "physics", label: "Physics" },
-  { value: "programming", label: "Programming" },
-  { value: "computer science", label: "Computer Science" },
-];
+// const subjects = [
+//   { value: "mathematics", label: "Mathematics" },
+//   { value: "physics", label: "Physics" },
+//   { value: "programming", label: "Programming" },
+//   { value: "computer science", label: "Computer Science" },
+// ];
 
 const levels = [
   { value: "BE", label: "Beginer" },
@@ -59,19 +59,40 @@ const levels = [
   { value: "AD", label: "Advanced" },
 ];
 
-const PostAdder = () => {
+const PostAdder = ({user}) => {
 
   const { handleSubmit, control } = useForm();
   const classes = useStyles();
   const history = useHistory();
 
+  const [subjects, setSubjects] = useState(null)
+  const fetchSubjects = () => {
+    axios.get(`v1/wishub/subjects/`)
+      .then(res => {
+        if(res.status === 200){
+          setSubjects(res.data)
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data);
+          }
+      });
+  }
+
+  useEffect(() => {
+    fetchSubjects()
+  }, [])
+
+
 
   const handlePostAdder = (post) => {
-
-    axios.post('v1/users/auth/post-add/', post)
+    console.log(post)
+    post['author'] = user.pk
+    axios.post('v1/wishub/posts/', post)
       .then(res => {
         if(res.status === 201){
-          history.push("/posts/:id")
+          history.push(`/posts/${post.subject}`)
         }
       })
       .catch((error) => {
@@ -90,16 +111,16 @@ const PostAdder = () => {
         </Typography>
         <FormProvider { ...handleSubmit }>
         <form onSubmit = {handleSubmit(handlePostAdder)} className={classes.form}>
-          <Controller
-            render = {({field}) => (
-                <TextField {...field} fullWidth label="Author" required onChange={(e) => field.onChange(e)}
-                    value={field.value}/>
-            )}
-            name="author"
-            control={control}
-            defaultValue=""
-            label="Author"
-          />
+          {/*<Controller*/}
+          {/*  render = {({field}) => (*/}
+          {/*      <TextField {...field} fullWidth label="Author" required onChange={(e) => field.onChange(e)}*/}
+          {/*          value={field.value}/>*/}
+          {/*  )}*/}
+          {/*  name="author"*/}
+          {/*  control={control}*/}
+          {/*  defaultValue=""*/}
+          {/*  label="Author"*/}
+          {/*/>*/}
 
           <Controller
             render = {({field}) => (
@@ -124,7 +145,7 @@ const PostAdder = () => {
           <Controller
             render = {({field}) => (
                 <Select fullWidth label="Subject" required subjects={subjects} onChange={(e) => field.onChange(e)}>
-                  {subjects && subjects.map(subject=>( <option value={subject.value}>{subject.label}</option> ))}
+                  {subjects && subjects.map(subject=>( <option key={subject.id} value={subject.id}>{subject.title}</option> ))}
                 </Select>
             )}
             name="subject"
