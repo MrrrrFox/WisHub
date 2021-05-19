@@ -4,7 +4,7 @@ import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-import {Posts, UserPage} from './pages'
+import {Posts, UserPage} from './pages' // Post
 import axios from "./axios.config";
 
 
@@ -39,7 +39,6 @@ const App = () => {
     // }
     getUser()
   }, [isLogged])
-
   return (
     <BrowserRouter>
       <Switch>
@@ -52,6 +51,7 @@ const App = () => {
         <Route path="/user/:id" render={(props) => (
           <UserPage {...props} user={user}/>
         )} />
+        {/*<Route path={"/post/:id"} component={Post}/>*/}
       </Switch>
       <CssBaseline />
       <div className="App">
