@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.utils import timezone
 # from django.contrib.auth.models import User #is it making a proper table?
 from users.models import CustomUser
@@ -47,8 +47,35 @@ class Post(models.Model):
     num_upvoted = models.IntegerField(default=0)
     num_downvoted = models.IntegerField(default=0)
 
+    def upvote(self, user):
+        try:
+            self.post_votes.create(user=user, post=self, vote_type="up")
+            self.num_upvoted += 1
+            self.save()
+        except IntegrityError:
+            raise Exception('already_voted')
+        return 'ok'
+
+    def downvote(self, user):
+        try:
+            self.post_votes.create(user=user, post=self, vote_type="down")
+            self.num_downvoted += 1
+            self.save()
+        except IntegrityError:
+            raise Exception('already_voted')
+        return 'ok'
+
     def __str__(self): #TO DO: This one should be changed to sth shorter
         return self.description
 
     class Meta:
         ordering = ( '-created', )
+
+#trying to implement voting
+class UserVotes(models.Model):
+    user = models.ForeignKey(CustomUser, related_name="user_votes", on_delete=models.PROTECT)
+    post = models.ForeignKey(Post, related_name="post_votes", on_delete=models.PROTECT)
+    vote_type = models.CharField(max_length=5)
+
+    class Meta:
+        unique_together = ('user', 'post')
