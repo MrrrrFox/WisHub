@@ -4,12 +4,12 @@ import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-import {Posts} from './pages'
+import {Posts, UserPage} from './pages'
 import axios from "./axios.config";
 
 
 const App = () => {
- const initUserLogged = localStorage.getItem('isLogged') || null;
+  const initUserLogged = localStorage.getItem('isLogged') || null;
   const [isLogged, setLogged] = useState(initUserLogged)
   const [user, setUser] = useState(null)
   window.addEventListener('storage',  () => {
@@ -17,11 +17,10 @@ const App = () => {
   });
 
   const getUser = () => {
-    console.log(isLogged)
+    // console.log(isLogged)
     axios.get('v1/users/auth/user/',{headers:{'Authorization': `Token ${isLogged}`}})
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
           setUser(res.data)
         }
       })
@@ -32,13 +31,13 @@ const App = () => {
       });
   }
   useEffect(() => {
-    if( isLogged !== null){
-      getUser()
-    }
-    else {
-      setUser(null)
-    }
-
+    // if( isLogged !== null){
+    //   getUser()
+    // }
+    // else {
+    //   setUser(null)
+    // }
+    getUser()
   }, [isLogged])
 
   return (
@@ -50,6 +49,9 @@ const App = () => {
           <PostAdder {...props} user={user}/>
         )}/>
         <Route path="/posts/:id" component={Posts}/>
+        <Route path="/user/:id" render={(props) => (
+          <UserPage {...props} user={user}/>
+        )} />
       </Switch>
       <CssBaseline />
       <div className="App">
