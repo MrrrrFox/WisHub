@@ -35,11 +35,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.main,
     textTransform: 'uppercase',
     maxWidth: '300px',
+    fontSize: '15px'
   },
 }));
 
 const LinkBox = (props) => {
-  let { description, link, author, numDownvoted, numUpvoted } = props.post;
+  let { description, link, author, numDownvoted, numUpvoted, created } = props.post;
+  const idx = created.indexOf('T');
+  var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
+
   const [upCount, setUpCount] = useState(numUpvoted);
   const incrementCount = () => {
     setUpCount(upCount + 1);
@@ -83,6 +87,8 @@ const LinkBox = (props) => {
         {/*</Button>*/}
         <Typography className={classes.username} variant="h6">
           {author}
+          <br/>
+          {date}
         </Typography>
       </Card>
     </div>

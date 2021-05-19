@@ -16,9 +16,22 @@ const Sort = (props) => {
       };
 
     const showSorted = () => {
-        value === "best" ?
-        props.posts.sort((a, b) => (a["numUpvoted"] - a["numDownvoted"] < b["numUpvoted"] - b["numDownvoted"]) ? 1 : -1) :
-        props.posts.sort((a, b) => (a["numUpvoted"] - a["numDownvoted"] > b["numUpvoted"] - b["numDownvoted"]) ? 1 : -1);
+        switch (value) {
+            case "best":
+                props.posts.sort((a, b) => (a["numUpvoted"] - a["numDownvoted"] < b["numUpvoted"] - b["numDownvoted"]) ? 1 : -1);
+                break;
+            case "worst":
+                props.posts.sort((a, b) => (a["numUpvoted"] - a["numDownvoted"] > b["numUpvoted"] - b["numDownvoted"]) ? 1 : -1);
+                break;
+            case "newest":
+                props.posts.sort((a, b) => (Date.parse(a["created"]) < Date.parse(b["created"])) ? 1 : -1);
+                break;
+            case "oldest":
+                props.posts.sort((a, b) => (Date.parse(a["created"]) > Date.parse(b["created"])) ? 1 : -1);
+                break;
+            default:
+                break;
+          }
 
         props.onSort(props.posts);
     };
@@ -30,6 +43,8 @@ const Sort = (props) => {
                 <Select onChange={sortBy}>
                     <MenuItem value="best">Best rated</MenuItem>
                     <MenuItem value="worst">Worst rated</MenuItem>
+                    <MenuItem value="newest">Newest</MenuItem>
+                    <MenuItem value="oldest">Oldest</MenuItem>
                 </Select>
                 <Button 
                 variant="contained"
