@@ -39,13 +39,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { text, link, upvoted, downvoted, comments, user } = props.post;
-  const [upCount, setUpCount] = useState(upvoted);
+  let { description, link, author, numDownvoted, numUpvoted } = props.post;
+  const [upCount, setUpCount] = useState(numUpvoted);
   const incrementCount = () => {
     setUpCount(upCount + 1);
   };
 
-  const [downCount, setDownCount] = useState(downvoted);
+  const [downCount, setDownCount] = useState(numDownvoted);
   const decrementCount = () => {
     setDownCount(downCount - 1);
   };
@@ -63,7 +63,7 @@ const LinkBox = (props) => {
               href={link}
               className={classes.link}
             >
-              {text}
+              {description}
             </Fab>
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
@@ -77,12 +77,12 @@ const LinkBox = (props) => {
           <NavigationIcon className={classes.transformation} />
           {downCount}
         </Button>
-        <Button>
-          <ChatBubbleOutlineIcon className={classes.extendedIcon} />
-          {comments.length}
-        </Button>
+        {/*<Button>*/}
+        {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
+        {/*  {comments.length}*/}
+        {/*</Button>*/}
         <Typography className={classes.username} variant="h6">
-          {user[0]}
+          {author}
         </Typography>
       </Card>
     </div>

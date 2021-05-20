@@ -3,7 +3,7 @@ import { makeStyles, Grid, Typography, Button } from '@material-ui/core';
 import logo from '../../icons/logo.png';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import axios from "../../axios.config";
-import {useHistory} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     background: `url(${logo}) no-repeat`,
     backgroundSize: '100%',
+    display: 'block',
+
   },
   text: {
     color: theme.palette.navbar,
@@ -45,13 +47,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({isLogged, setLogged}) => {
+const TopBar = ({isLogged, setLogged, user}) => {
   const classes = useStyles();
   const history = useHistory()
   const logoutUser = () => {
     axios.post('v1/users/auth/logout/',{"Authorization": isLogged})
       .then(res => {
-        console.log(res)
         if(res.status === 200){
           localStorage.clear();
           setLogged(null)
@@ -66,7 +67,8 @@ const TopBar = ({isLogged, setLogged}) => {
   }
   return (
     <Grid className={classes.wrapper} container justify="space-between">
-      <div className={classes.logo} />
+      <Link to={"/"} className={classes.logo}/>
+
       <Typography className={classes.text} variant="h5">
       </Typography>
       <Typography className={classes.text} variant="h5">
@@ -74,21 +76,31 @@ const TopBar = ({isLogged, setLogged}) => {
         <Grid direction="column" className={classes.userSection}>
           <div>
             <Typography variant="body4" className={classes.user}>
-              {'Guest'}
+              {user!= null ? user.username : 'Guest'}
             </Typography>
+
             <div className={classes.iconWrapper}>
               <AccountCircleIcon></AccountCircleIcon>
             </div>
           </div>
-          {console.log(localStorage.getItem('isLogged'))}
           {isLogged !== null ? (
-            <Button
+            <>
+              <Button
               className={classes.loginButton}
               onClick={() => logoutUser()}
               color="secondary"
-            >
-              Logout
-            </Button>
+              >
+                Logout
+              </Button>
+              <Button
+              className={classes.loginButton}
+              href="/post-add"
+              color="secondary"
+              >
+                Add post
+              </Button>
+            </>
+
           ) : (
             <Button
               className={classes.loginButton}

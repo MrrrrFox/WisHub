@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer, DateTimeField
 from datetime import datetime
 from .models import Post, Subject, Domain
 
+
 class PostSerializer(ModelSerializer):
 
     #Debugging field

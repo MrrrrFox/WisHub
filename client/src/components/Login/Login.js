@@ -66,11 +66,9 @@ const SignIn = () => {
   }, []);
 
   const handleLogin = (user) => {
-    console.log(user)
     axios.post('v1/users/auth/login/',user)
       .then(res => {
         if(res.status === 200){
-          console.log(res.data.key)
           localStorage.clear();
           localStorage.setItem('isLogged', res.data.key);
           history.push("/")
@@ -79,6 +77,15 @@ const SignIn = () => {
       .catch((error) => {
         if( error.response ){
           console.log(error.response.data);
+          var err = document.getElementById("error");
+          
+          var email = error.response.data["email"];
+          var message = error.response.data["nonFieldErrors"];
+
+          typeof email !== 'undefined' ? err.innerHTML = email :
+          typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "";
+
+          err.style.color = "red";
           }
       });
 
@@ -88,6 +95,7 @@ const SignIn = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <p id="error"></p>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>

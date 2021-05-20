@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
+import axios from "../../axios.config";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -15,10 +16,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CollapseSection = ({ domain, fields, handleClick }) => {
+const CollapseSection = ({ domainID, handleClick }) => {
   const classes = useStyles();
-  const options = fields.find(({ name }) => name === domain).tags;
+  const [subjects, setSubjects] = useState(null)
+  const fetchSubjects = () => {
+    axios.get(`v1/wishub/subjects/${domainID}/by-domain`)
+      .then(res => {
+        if(res.status === 200){
+          setSubjects(res.data)
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data);
+          }
+      });
+  }
 
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
   return (
     <Grid
       container
@@ -26,14 +43,14 @@ const CollapseSection = ({ domain, fields, handleClick }) => {
       direction="column"
       alignItems="flex-start"
     >
-      {options.map(({ tag_id, name }) => (
+      {subjects && subjects.map(({ id, title }) => (
         <Typography
           className={classes.navOption}
           variant="h5"
-          key={tag_id}
-          onClick={() => handleClick(tag_id, domain)}
+          key={id}
+          onClick={() => handleClick(id)}
         >
-          {name}
+          {title}
         </Typography>
       ))}
     </Grid>

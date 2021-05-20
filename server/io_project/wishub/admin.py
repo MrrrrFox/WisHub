@@ -1,7 +1,9 @@
 from django.contrib import admin
 from .models import Post, Subject, Domain
+from django.urls import include, path
 
-#Adding more fancy Admin views
+
+# Adding more fancy Admin views
 class PostAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'link', 'author',
                     'subject', 'level', 'created',
@@ -10,15 +12,18 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
     ordering = ['-num_upvoted', '-created']
 
+
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'domain')
     list_filter = ('domain',)
 
+
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', )
+    list_display = ('id', 'title',)
+
 
 # Register your models here.
-from django.urls import include, path
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

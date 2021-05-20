@@ -23,6 +23,6 @@ API_DESCRIPTION = '...'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/', include('users.urls')),
-    path('', include('wishub.urls', namespace='wishub')),
+    path('api/v1/wishub/', include('wishub.urls', namespace='wishub')),
     # path('docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION))
 ]
