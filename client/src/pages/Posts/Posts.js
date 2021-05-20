@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Posts = () => {
+const Posts = ({user}) => {
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
   const [orgPosts, setOrgPosts] = useState(null);
@@ -73,7 +73,7 @@ const Posts = () => {
         id="postsList"
       >
         {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} />) : null
+          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} />) : null
           }
       </Grid>
     </Grid>

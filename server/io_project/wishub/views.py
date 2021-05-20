@@ -44,7 +44,7 @@ class PostViewSet(viewsets.ModelViewSet):
                 "user_id" : [number with id],
                 "vote_type": "up"/"down"
             }"""
-
+        
         try:
             desired_post = Post.objects.filter(id=pk)[0]
             current_user = CustomUser.objects.filter(id = request.data['user_id'])[0]

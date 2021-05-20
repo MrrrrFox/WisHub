@@ -80,7 +80,7 @@ const TopBar = ({isLogged, setLogged, user}) => {
             </Typography>
 
             <div className={classes.iconWrapper}>
-              <AccountCircleIcon></AccountCircleIcon>
+              <AccountCircleIcon onClick={() => history.push(`/user/${user.pk}`)}/>
             </div>
           </div>
           {isLogged !== null ? (

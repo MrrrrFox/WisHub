@@ -46,12 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const subjects = [
-//   { value: "mathematics", label: "Mathematics" },
-//   { value: "physics", label: "Physics" },
-//   { value: "programming", label: "Programming" },
-//   { value: "computer science", label: "Computer Science" },
-// ];
 
 const levels = [
   { value: "BE", label: "Beginer" },
