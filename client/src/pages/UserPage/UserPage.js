@@ -1,10 +1,9 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import {Button, ButtonBase, Typography} from "@material-ui/core";
-import {EditUserData, UserPosts, MessageAdmin, EditPost} from './components'
+import {Button, ButtonBase} from "@material-ui/core";
+import {UserData, UserPosts, MessageAdmin, EditData} from './components'
 import {makeStyles} from "@material-ui/core/styles";
 import blank from '../../assets/images/blank.png'
-import Container from "@material-ui/core/Container";
 import {
   Switch,
   useRouteMatch,
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     height: 300,
   },
   img: {
-    // margin: 'auto',
+    margin: 'auto',
     display: 'block',
     maxWidth: '100%',
     maxHeight: '100%',
@@ -69,6 +68,9 @@ const UserPage = ({user}) => {
                 <img className={classes.img} alt="complex" src={blank}/>
               </ButtonBase>
             </Grid>
+            <Grid item>
+              <UserData user={user}/>
+            </Grid>
             <Grid item >
               <Button
                 variant="contained"
@@ -84,7 +86,7 @@ const UserPage = ({user}) => {
                 color={"secondary"}
                 onClick={() => history.push(`${url}/edit`)}
               >
-                Dane
+                Edit
               </Button>
             </Grid>
             <Grid item>
@@ -101,22 +103,28 @@ const UserPage = ({user}) => {
             container
             item xs={9}
             direction="column"
-            justify="space-around"
-            alignContent="center"
+            // justify="space-around"
+            // alignContent="center"
+            alignItems={"center"}
           >
-            <Grid
-              container
-              direction="row"
+            {/*<Grid*/}
+            {/*  container*/}
+            {/*  direction="row"*/}
 
-              justify="space-around"
-              alignItems="flex-start"
-            >
-            </Grid>
+            {/*  justify="space-around"*/}
+            {/*  // alignItems="flex-start"*/}
+            {/*>*/}
+            {/*</Grid>*/}
             <Grid
               container
               justify="space-around"
+              // alignItems={"flex-start"}
+              alignItems={"center"}
             >
               <Switch>
+                <Route exact path={`${path}`}>
+                  <UserPosts userId={user.pk}/>
+                </Route>
                 <Route exact path={`${path}/message`}>
                   <MessageAdmin/>
                 </Route>
@@ -124,7 +132,7 @@ const UserPage = ({user}) => {
                   <UserPosts userId={user.pk}/>
                 </Route>
                 <Route exact path={`${path}/edit`}>
-                  <EditUserData user={user}/>
+                  <EditData user={user}/>
                 </Route>
               </Switch>
             </Grid>

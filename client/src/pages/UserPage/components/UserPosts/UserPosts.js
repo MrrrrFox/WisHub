@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from 'react';
 import axios from "../../../../axios.config";
-// import {LinkBox} from '../../../../components'
 import {UserPost} from './components'
 import {Grid} from "@material-ui/core";
 
@@ -28,6 +27,7 @@ const UserPosts = ({userId}) => {
       id="postsList"
       justify="space-around"
       item xs={9}
+      alignItems={"flex-start"}
     >
       {userPosts
         ? userPosts.map((post) =>

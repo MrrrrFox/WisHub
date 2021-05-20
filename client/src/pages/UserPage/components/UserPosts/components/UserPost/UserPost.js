@@ -27,6 +27,7 @@ const UserPost = ({post, fetchUserPosts}) => {
   }
   return (
     <Grid
+      item
       container
       id="postsList"
       justify="space-around"
