@@ -7,6 +7,7 @@ import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import axios from "../../axios.config";
 
 const { useState } = React;
 
@@ -39,23 +40,64 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { description, link, author, numDownvoted, numUpvoted } = props.post;
+  let { id, description, link, author, numDownvoted, numUpvoted } = props.post;
+  let user = props.user;
   const [upCount, setUpCount] = useState(numUpvoted);
   const [colorVote, setColorVote] = useState('black');
+
   const incrementCount = () => {
-    colorVote === 'green' ? setUpCount(upCount - 1) : setUpCount(upCount + 1);
+    /*colorVote === 'green' ? setUpCount(upCount - 1) : setUpCount(upCount + 1);
     if(colorVote === 'red')
-      setDownCount(downCount + 1);
+      setDownCount(downCount - 1);
     colorVote === 'green' ? setColorVote('black') : setColorVote('green');
+    //style={{ color: colorVote === 'red' ? 'black' : colorVote }}*/
+    
+    const vote = {
+      "user_id" : user["pk"],
+      "vote_type": "up"
+    }
+    console.log(vote);
+    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
+      .then(res => {
+        if(res.status === 200){
+          console.log(res.data)
+          setUpCount(upCount + 1);
+          setColorVote('green');
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data); // => the response payload
+          }
+      });
   };
 
   const [downCount, setDownCount] = useState(numDownvoted);
   const decrementCount = () => {
-    setDownCount(downCount - 1);
-    colorVote === 'red' ? setDownCount(downCount + 1) : setDownCount(downCount - 1);
+    /*setDownCount(downCount - 1);
+    colorVote === 'red' ? setDownCount(downCount - 1) : setDownCount(downCount + 1);
     if(colorVote === 'green')
       setUpCount(upCount - 1);
-    colorVote === 'red' ? setColorVote('black') : setColorVote('red');
+    colorVote === 'red' ? setColorVote('black') : setColorVote('red');*/
+
+    const vote = {
+      "user_id" : user["pk"],
+      "vote_type": "down"
+    }
+    console.log(vote);
+    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
+      .then(res => {
+        if(res.status === 200){
+          console.log(res.data)
+          setDownCount(downCount + 1);
+          setColorVote('red');
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data); // => the response payload
+          }
+      });
   };
 
   const classes = useStyles();
@@ -83,7 +125,7 @@ const LinkBox = (props) => {
         </Button>
         <Button onClick={decrementCount}>
           <NavigationIcon className={classes.transformation} style={{ color: colorVote === 'green' ? 'black' : colorVote }} />
-          {downCount}
+          -{downCount}
         </Button>
         {/*<Button>*/}
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}

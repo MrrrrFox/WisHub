@@ -49,7 +49,9 @@ const App = () => {
         <Route exact path="/post-add" render={(props) =>(
           <PostAdder {...props} user={user}/>
         )}/>
-        <Route path="/posts/:id" component={Posts}/>
+        <Route path="/posts/:id" render={(props) =>(
+          <Posts {...props} user={user}/>
+        )}/>
       </Switch>
       <CssBaseline />
       <div className="App">
