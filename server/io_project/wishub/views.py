@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import Post, Subject, Domain
 from .serializers import PostSerializer, SubjectSerializer, DomainSerializer
+from users.models import CustomUser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -31,10 +32,30 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True, url_path='by-author',
         url_name='by_author')
     def get_post_by_author_id(self, request, pk=None):
+        print(request.data['email'])
         posts = Post.objects.filter(author = pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+    @action(methods=['post'], detail=True, url_path='vote-post')
+    def vote_post(self, request, pk=None):
+        """Request should look like this:
+            {
+                "user_id" : [number with id],
+                "vote_type": "up"/"down"
+            }"""
+        try:
+            desired_post = Post.objects.filter(id=pk)[0]
+            current_user = CustomUser.objects.filter(id = request.data['user_id'])[0]
+            if request.data['vote_type']=="up":
+                desired_post.upvote(current_user)
+            elif request.data['vote_type']=="down":
+                desired_post.downvote(current_user)
+            else:
+                print("Incorrect vote_type parameter in the request")
+        except Exception as ex:
+            print(ex)
+        return JsonResponse(self.serializer_class(desired_post).data, safe=False)
 
 class SubjectViewSet(viewsets.ModelViewSet):
     '''ViewSet class for the Subjects
