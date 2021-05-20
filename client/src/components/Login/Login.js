@@ -64,8 +64,9 @@ const SignIn = () => {
       setLoading(false);
     }
   }, []);
-
+  
   const handleLogin = (user) => {
+    console.log(user);
     axios.post('v1/users/auth/login/',user)
       .then(res => {
         if(res.status === 200){
