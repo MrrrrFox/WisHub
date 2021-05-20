@@ -61,9 +61,6 @@ const UserPage = ({user}) => {
                 alignContent="center"
                >
                 <Grid item>
-                  {/*<Typography variant="h1" component="h1">*/}
-                  {/*  {user.username}*/}
-                  {/*</Typography>*/}
                   <ButtonBase className={classes.image}>
                     <img className={classes.img} alt="complex" src={blank} />
                   </ButtonBase>
@@ -80,7 +77,6 @@ const UserPage = ({user}) => {
                 <Grid
                   container
                   item xs={9}
-                  // direction="row"
                   justify="space-around"
                   alignContent="center"
                 >
@@ -91,26 +87,28 @@ const UserPage = ({user}) => {
 
               </Grid>
             </Grid>
-         <Grid
-                   container
-                   item xs={12}
-                   justifyContent={"flex-end"}
+            <Grid
+              container
+              item xs={12}
+              justifyContent={"flex-end"}
+              alignItems={"flex-start"}
                   //  direction="column"
                   //  justify="flex-end"
                   // alignContent="flex-end"
-                   >
-                   <Switch>
-                     <Route exact path={`${path}/message`}>
+            >
+              {/*<GR*/}
+              <Switch>
+                <Route exact path={`${path}/message`}>
                        <MessageAdmin/>
-                     </Route>
-                     <Route exact path={`${path}/user-posts/`}>
-                       <UserPosts userId={user.pk}/>
-                     </Route>
-                     <Route exact path={`${path}/edit`}>
-                       <EditUserData/>
-                     </Route>
-                   </Switch>
-                 </Grid>
+                </Route>
+                <Route exact path={`${path}/user-posts/`}>
+                  <UserPosts userId={user.pk}/>
+                </Route>
+                <Route exact path={`${path}/edit`}>
+                  <EditUserData/>
+                </Route>
+              </Switch>
+            </Grid>
       {/*<Grid*/}
       {/*  container*/}
       {/*  justify="space-around"*/}
