@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {LinkBox} from '../../../../../../components'
 import {Grid} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -12,14 +12,14 @@ const UserPost = ({post, fetchUserPosts}) => {
   const deletePost = () => {
     axios.delete(`v1/wishub/posts/${post.id}`)
       .then(res => {
-        if(res.status){
+        if (res.status) {
           fetchUserPosts()
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data);
-          }
+        }
       });
   }
   const editPost = () => {
@@ -30,31 +30,37 @@ const UserPost = ({post, fetchUserPosts}) => {
       container
       id="postsList"
       justify="space-around"
+      alignItems={"center"}
     >
 
       <Grid item>
-        <LinkBox key={post.id} post={post} />
+        <LinkBox key={post.id} post={post}/>
       </Grid>
+      <Grid item>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<DeleteIcon/>}
+          onClick={() => deletePost()}
+        >
+          Delete
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button
+          variant="contained"
+          color="default"
+          startIcon={<EditIcon/>}
+          onClick={() => editPost()}
+        >
 
-      <Button
-        variant="contained"
-        color="secondary"
-        startIcon={<DeleteIcon />}
-        onClick={() => deletePost()}
-      >
-        Delete
-      </Button>
-         <Button
-        variant="contained"
-        color="default"
-        startIcon={<EditIcon />}
-        onClick={() => editPost()}
-      >
-        Edit
-      </Button>
+          Edit
+        </Button>
+      </Grid>
       <PostEditDialog open={open} setOpen={setOpen} post={post} fetchUserPosts={fetchUserPosts}/>
     </Grid>
-  );
+  )
+    ;
 };
 
 export default UserPost;

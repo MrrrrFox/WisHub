@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import {Button, ButtonBase, Typography} from "@material-ui/core";
-import {EditUserData, UserPosts, MessageAdmin,EditPost} from './components'
+import {EditUserData, UserPosts, MessageAdmin, EditPost} from './components'
 import {makeStyles} from "@material-ui/core/styles";
 import blank from '../../assets/images/blank.png'
 import Container from "@material-ui/core/Container";
@@ -9,7 +9,8 @@ import {
   Switch,
   useRouteMatch,
   Route,
-  useHistory} from "react-router-dom";
+  useHistory
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,17 +22,17 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-    paper: {
+  paper: {
     padding: theme.spacing(2),
     margin: 'auto',
     maxWidth: 500,
   },
   image: {
-    // width: 128,
-    // height: 128,
+    width: 300,
+    height: 300,
   },
   img: {
-    margin: 'auto',
+    // margin: 'auto',
     display: 'block',
     maxWidth: '100%',
     maxHeight: '100%',
@@ -41,56 +42,78 @@ const useStyles = makeStyles((theme) => ({
 
 const UserPage = ({user}) => {
 
-  let { path, url } = useRouteMatch();
+  let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
 
-  return(
+  return (
     <>
-      {user ? <Container>
-             <Grid
-               container
-               justify="space-around"
-               alignContent="center"
-             >
-               <Grid
-                container
-                item xs={3}
-                direction="column"
-                justify="space-around"
-                alignContent="center"
-               >
-                <Grid item>
-                  <ButtonBase className={classes.image}>
-                    <img className={classes.img} alt="complex" src={blank} />
-                  </ButtonBase>
+      {user ?
+        <Grid
+          container
+          item xs={12}
+          justify="space-around"
+          alignContent="center"
+        >
+          <Grid
+            container
+            item xs={3}
+            direction="column"
+            justify="center"
+            alignContent="center"
+            alignItems={"center"}
+            spacing={3}
+          >
+            <Grid item>
+              <ButtonBase className={classes.image}>
+                <img className={classes.img} alt="complex" src={blank}/>
+              </ButtonBase>
+            </Grid>
+            <Grid item >
+              <Button
+                variant="contained"
+                color={"secondary"}
+                onClick={() => history.push(`${url}/user-posts`)}
+              >
+                Posts
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color={"secondary"}
+                onClick={() => history.push(`${url}/edit`)}
+              >
+                Dane
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color={"secondary"}
+                onClick={() => history.push(`${url}/message`)}
+              >
+                Message to admin
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item xs={9}
+            direction="column"
+            justify="space-around"
+            alignContent="center"
+          >
+            <Grid
+              container
+              direction="row"
 
-                </Grid>
-               </Grid>
-               <Grid
-                container
-                item xs={9}
-                direction="column"
-                justify="space-around"
-                alignContent="center"
-               >
-                <Grid
-                  container
-                  item xs={9}
-                  justify="space-around"
-                  // alignContent="center"
-                  alignItems="flex-start"
-                >
-                  <Button onClick={() => history.push(`${url}/user-posts`)}>Posts</Button>
-                  <Button onClick={() => history.push(`${url}/edit`)}>Edit</Button>
-                  <Button onClick={() => history.push(`${url}/message`)}>Message to admin</Button>
-                </Grid>
-
-              </Grid>
+              justify="space-around"
+              alignItems="flex-start"
+            >
             </Grid>
             <Grid
               container
-              item xs={12}
               justify="space-around"
             >
               <Switch>
@@ -105,10 +128,11 @@ const UserPage = ({user}) => {
                 </Route>
               </Switch>
             </Grid>
-
-      </Container>
+          </Grid>
+        </Grid>
         :
-        null}
+        null
+      }
     </>
   );
 }
