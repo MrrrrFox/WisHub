@@ -1,15 +1,17 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, DateTimeField
 from datetime import datetime
 from .models import Post, Subject, Domain
 
 
 class PostSerializer(ModelSerializer):
 
+    #Debugging field
+    #created = DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S'])
+
     class Meta:
         model = Post
-        #TO DO: Add serializaion of dates
         fields = ('id', 'author', 'link', 'description', 'subject', 'level',
-                'num_upvoted', 'num_downvoted' )
+                'num_upvoted', 'num_downvoted', 'created' )
 
 
 class SubjectSerializer(ModelSerializer):

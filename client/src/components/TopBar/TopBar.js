@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({isLogged, setLogged}) => {
+const TopBar = ({isLogged, setLogged, user}) => {
   const classes = useStyles();
   const history = useHistory()
   const logoutUser = () => {
@@ -76,7 +76,7 @@ const TopBar = ({isLogged, setLogged}) => {
         <Grid direction="column" className={classes.userSection}>
           <div>
             <Typography variant="body4" className={classes.user}>
-              {'Guest'}
+              {user!= null ? user.username : 'Guest'}
             </Typography>
 
             <div className={classes.iconWrapper}>

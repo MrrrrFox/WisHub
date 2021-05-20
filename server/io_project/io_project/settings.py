@@ -168,9 +168,10 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True  # Rest Framework config. Add all of this.
 
 REST_FRAMEWORK = {
-    'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+# 'DATETIME_FORMAT': "%m/%d/%Y %I:%M%P",
+'DATE_INPUT_FORMATS': ['iso-8601', '%Y-%m-%dT%H:%M:%S.%fZ'],
+'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
