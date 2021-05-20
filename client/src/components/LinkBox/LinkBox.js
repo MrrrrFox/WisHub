@@ -58,7 +58,7 @@ const LinkBox = (props) => {
   };
 
   const classes = useStyles();
-
+  // history.push(`post/${post.id}`
   return (
     <div className={classes.root}>
       <Card>
