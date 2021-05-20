@@ -37,10 +37,13 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '300px',
     fontSize: '15px'
   },
+  level: {
+    fontSize: '15px'
+  }
 }));
 
 const LinkBox = (props) => {
-  let { description, link, author, numDownvoted, numUpvoted, created } = props.post;
+  let { description, link, author, numDownvoted, numUpvoted, created, level } = props.post;
   const idx = created.indexOf('T');
   var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
 
@@ -60,6 +63,9 @@ const LinkBox = (props) => {
     <div className={classes.root}>
       <Card>
         <CardContent>
+          <Typography className={classes.level}>
+            Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
+          </Typography>
           <Typography gutterBottom variant="h5" component="h2">
             <Fab
               variant="extended"
