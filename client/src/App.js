@@ -12,6 +12,7 @@ const App = () => {
   const initUserLogged = localStorage.getItem('isLogged') || null;
   const [isLogged, setLogged] = useState(initUserLogged)
   const [user, setUser] = useState(null)
+
   window.addEventListener('storage',  () => {
     setLogged(localStorage.getItem('isLogged') );
   });

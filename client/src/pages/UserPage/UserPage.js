@@ -1,13 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
-import NavItem from "../../components/NavItem";
-// import {AppBar} from "@material-ui/core";
-import {Toolbar, AppBar, Button, CardMedia, ButtonBase} from "@material-ui/core";
-import {Image} from "@material-ui/icons";
-import {Card} from "@material-ui/core";
+import {Button, ButtonBase, Typography} from "@material-ui/core";
+import {EditUserData, UserPosts, MessageAdmin,EditPost} from './components'
 import {makeStyles} from "@material-ui/core/styles";
-// import Button
 import blank from '../../assets/images/blank.png'
+import Container from "@material-ui/core/Container";
+import {
+  Switch,
+  useRouteMatch,
+  Route,
+  useHistory} from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -24,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 500,
   },
   image: {
-    width: 128,
-    height: 128,
+    // width: 128,
+    // height: 128,
   },
   img: {
     margin: 'auto',
@@ -36,79 +39,100 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const UserPage = (user) => {
+const UserPage = ({user}) => {
 
+  let { path, url } = useRouteMatch();
+  const history = useHistory()
   const classes = useStyles();
-  return (<div>
 
-      <Grid
-        container
-        // direction="row"
-        justify="space-around"
-        alignContent="center"
-      >
-        <Grid
-          container
-          item xs={3}
-          direction="column"
-          justify="space-around"
-          alignContent="center"
-        >
-          <Grid item>
-            <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="complex" src={blank} />
-            </ButtonBase>
+  return(
+    <>
+      {user ? <Container>
+             <Grid
+               container
+               justify="space-around"
+               alignContent="center"
+             >
+               <Grid
+                container
+                item xs={3}
+                direction="column"
+                justify="space-around"
+                alignContent="center"
+               >
+                <Grid item>
+                  {/*<Typography variant="h1" component="h1">*/}
+                  {/*  {user.username}*/}
+                  {/*</Typography>*/}
+                  <ButtonBase className={classes.image}>
+                    <img className={classes.img} alt="complex" src={blank} />
+                  </ButtonBase>
 
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          item xs={9}
-          direction="column"
-          justify="space-around"
-          alignContent="center"
-        >
-          <Grid
-            container
-            item xs={9}
-            direction="row"
-            justify="space-around"
-            alignContent="center"
-            // className={classes.root}
-          >
-            <Button >Posts</Button>
-            <Button >Edit</Button>
-            <Button >Message to admin</Button>
-          </Grid>
+                </Grid>
+               </Grid>
+               <Grid
+                container
+                item xs={9}
+                direction="column"
+                justify="space-around"
+                alignContent="center"
+               >
+                <Grid
+                  container
+                  item xs={9}
+                  // direction="row"
+                  justify="space-around"
+                  alignContent="center"
+                >
+                  <Button onClick={() => history.push(`${url}/user-posts`)}>Posts</Button>
+                  <Button onClick={() => history.push(`${url}/edit`)}>Edit</Button>
+                  <Button onClick={() => history.push(`${url}/message`)}>Message to admin</Button>
+                </Grid>
 
-        </Grid>
-      </Grid>
-      <Grid
+              </Grid>
+            </Grid>
+         <Grid
+                   container
+                   item xs={12}
+                   justifyContent={"flex-end"}
+                  //  direction="column"
+                  //  justify="flex-end"
+                  // alignContent="flex-end"
+                   >
+                   <Switch>
+                     <Route exact path={`${path}/message`}>
+                       <MessageAdmin/>
+                     </Route>
+                     <Route exact path={`${path}/user-posts/`}>
+                       <UserPosts userId={user.pk}/>
+                     </Route>
+                     <Route exact path={`${path}/edit`}>
+                       <EditUserData/>
+                     </Route>
+                   </Switch>
+                 </Grid>
+      {/*<Grid*/}
+      {/*  container*/}
+      {/*  justify="space-around"*/}
+      {/*  alignContent="center"*/}
+      {/*>*/}
+      {/*  <Grid*/}
+      {/*      container*/}
+      {/*      item xs={3}*/}
 
-      >
-        <Grid
-            container
-            item xs={3}
+      {/*      direction="column"*/}
+      {/*      justify="space-around"*/}
+      {/*      alignContent="center"*/}
+      {/*    >*/}
+      {/*      <Grid item>{user.username}</Grid>*/}
+      {/*    </Grid>*/}
 
-            direction="column"
-            justify="space-around"
-            alignContent="center"
-          >
-            <Grid item>Ala</Grid>
-          </Grid>
-        <Grid
-          container
-          item xs={9}
-          direction="column"
-          justify="space-around"
-          alignContent="center"
-        >
-          <Grid item>Ala</Grid>
-          <Grid item>Ala</Grid>
-        </Grid>
 
-      </Grid>
-    </div>
+      {/*</Grid>*/}
+      </Container>
+        :
+        null}
+    </>
   );
 }
 
