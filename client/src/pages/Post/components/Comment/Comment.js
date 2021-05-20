@@ -1,9 +1,7 @@
-import React, { useState, useEffect} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -33,20 +31,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Comment = ({comment}) => {
+const Comment = ({user}) => {
 
   const { handleSubmit, control } = useForm();
   const classes = useStyles();
   const history = useHistory();
-
+  //const today = new Date();
+  //const { post_id: post_id_string } = parse(props.location.search);
+  //const post_id = post_id_string ? parseInt(post_id_string, 10) : '';
+  //const redirect = post_id ? `/posts/${post_id}/show/comments` : false;
 
   const handleComment = (comment) => {
     console.log(comment)
-    post['author'] = user.pk
-    axios.post('v1/wishub/posts/', comment)
+    comment['author'] = user.pk
+    axios.post('v1/wishub/posts/${post.id}/comments', comment)
       .then(res => {
         if(res.status === 201){
-          history.push(`/posts/${comment.id}`)
+          history.push(`/comments/${comment.id}`)
         }
       })
       .catch((error) => {
@@ -71,7 +72,7 @@ const Comment = ({comment}) => {
                 <TextField {...field} fullWidth label="Title" required onChange={(e) => field.onChange(e)}
                            value={field.value} inputProps={{ maxLength: 100 }}/>
             )}
-            name="titlw"
+            name="title"
             control={control}
             defaultValue=""
           />

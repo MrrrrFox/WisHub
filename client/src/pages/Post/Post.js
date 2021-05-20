@@ -30,17 +30,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Posts = () => {
+const Post = () => {
   const classes = useStyles();
-  const [posts, setPosts] = useState(null)
+  const [post, setPost] = useState(null)
   const { id } = useParams();
+  let comments
 
-  const fetchPosts = () => {
-    axios.get(`v1/wishub/posts/${id}/by-subject`)
+  const fetchPost = () => {
+    axios.get(`v1/wishub/posts/${post.id}/`)
       .then(res => {
         if(res.status === 200){
           console.log(res.data)
-          setPosts(res.data)
+          setPost(res.data)
         }
       })
       .catch((error) => {
@@ -51,12 +52,12 @@ const Posts = () => {
   }
 
   useEffect(() => {
-    fetchPosts();
+    fetchPost();
   }, [id]);
 
   const onSort = (e) => {
-    setPosts([...e]);
-    console.log(posts);
+    setPost(e);
+    console.log(post);
   };
 
   return (
@@ -71,7 +72,7 @@ const Posts = () => {
       justify="flex-start"
       direction="column"
       >
-        <Sort posts={posts} onSort={onSort}/>
+        <Sort posts={post} onSort={onSort}/>
     </Grid>
       <Grid
         container
@@ -79,14 +80,22 @@ const Posts = () => {
         direction="column"
         id="postsList"
       >
-        {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} />) : null
+        {post
+          ? <LinkBox key={post.id} post={post} /> : null
+          }
+      </Grid>
+      <Grid
+        container
+        justify="flex-start"
+        direction="column"
+        id="commentsList"
+      >
+        {comments
+          ? comments.map((comment) => <LinkBox key={comment.id} comment={comment} />) : null
           }
       </Grid>
     </Grid>
   );
 };
 
-
-
-export default Posts;
+export default Post;

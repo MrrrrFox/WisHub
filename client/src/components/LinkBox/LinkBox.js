@@ -7,6 +7,8 @@ import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import Link from "@material-ui/core/Link";
+import {AddComment} from "@material-ui/icons";
 
 const { useState } = React;
 
@@ -37,6 +39,19 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '300px',
   },
 }));
+
+const AddCommentButton = ({ classes, record }) => (
+  <Button
+    className={classes.button}
+    variant="raised"
+    component={Link}
+    to={`/comments/create?post_id=${record.id}`}
+    label="Add a comment"
+    title="Add a comment"
+  >
+    <AddComment />
+  </Button>
+);
 
 const LinkBox = (props) => {
   let { description, link, author, numDownvoted, numUpvoted } = props.post;
@@ -81,6 +96,7 @@ const LinkBox = (props) => {
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
         {/*</Button>*/}
+        <AddCommentButton />
         <Typography className={classes.username} variant="h6">
           {author}
         </Typography>
