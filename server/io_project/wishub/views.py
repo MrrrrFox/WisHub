@@ -6,7 +6,7 @@ from users.models import CustomUser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 
 
 # Create your views here.
@@ -44,6 +44,7 @@ class PostViewSet(viewsets.ModelViewSet):
                 "user_id" : [number with id],
                 "vote_type": "up"/"down"
             }"""
+
         try:
             desired_post = Post.objects.filter(id=pk)[0]
             current_user = CustomUser.objects.filter(id = request.data['user_id'])[0]
@@ -52,9 +53,10 @@ class PostViewSet(viewsets.ModelViewSet):
             elif request.data['vote_type']=="down":
                 desired_post.downvote(current_user)
             else:
-                print("Incorrect vote_type parameter in the request")
+                return JsonResponse({"error_message" : "Vote type not allowed" }, status=status.HTTP_501_NOT_IMPLEMENTED)
         except Exception as ex:
-            print(ex)
+            return JsonResponse({"error_message" : str(ex) }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            #here returning error code
         return JsonResponse(self.serializer_class(desired_post).data, safe=False)
 
 class SubjectViewSet(viewsets.ModelViewSet):
