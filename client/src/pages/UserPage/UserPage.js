@@ -78,7 +78,8 @@ const UserPage = ({user}) => {
                   container
                   item xs={9}
                   justify="space-around"
-                  alignContent="center"
+                  // alignContent="center"
+                  alignItems="flex-start"
                 >
                   <Button onClick={() => history.push(`${url}/user-posts`)}>Posts</Button>
                   <Button onClick={() => history.push(`${url}/edit`)}>Edit</Button>
@@ -90,43 +91,21 @@ const UserPage = ({user}) => {
             <Grid
               container
               item xs={12}
-              justifyContent={"flex-end"}
-              alignItems={"flex-start"}
-                  //  direction="column"
-                  //  justify="flex-end"
-                  // alignContent="flex-end"
+              justify="space-around"
             >
-              {/*<GR*/}
               <Switch>
                 <Route exact path={`${path}/message`}>
-                       <MessageAdmin/>
+                  <MessageAdmin/>
                 </Route>
                 <Route exact path={`${path}/user-posts/`}>
                   <UserPosts userId={user.pk}/>
                 </Route>
                 <Route exact path={`${path}/edit`}>
-                  <EditUserData/>
+                  <EditUserData user={user}/>
                 </Route>
               </Switch>
             </Grid>
-      {/*<Grid*/}
-      {/*  container*/}
-      {/*  justify="space-around"*/}
-      {/*  alignContent="center"*/}
-      {/*>*/}
-      {/*  <Grid*/}
-      {/*      container*/}
-      {/*      item xs={3}*/}
 
-      {/*      direction="column"*/}
-      {/*      justify="space-around"*/}
-      {/*      alignContent="center"*/}
-      {/*    >*/}
-      {/*      <Grid item>{user.username}</Grid>*/}
-      {/*    </Grid>*/}
-
-
-      {/*</Grid>*/}
       </Container>
         :
         null}
