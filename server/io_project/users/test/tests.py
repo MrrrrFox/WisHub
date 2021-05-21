@@ -14,25 +14,25 @@ class AuthTestCases(APITestCase):
     def setUp(self) -> None:
         self.user = CustomUser.objects.create(
             username="user1",
-            email="test@loclahost",
-            password="eluwina1234"
+            email="test@gmail.com",
+            password="adminadmin",
         )
 
         CustomUser.objects.create(
             username="user2",
-            email="user@localhost",
+            email="user2@localhost",
             password="eluwina1234",
         )
 
         CustomUser.objects.create(
             username="user3",
-            email="user@localhost",
+            email="user3@localhost",
             password="eluwina1234",
         )
 
         CustomUser.objects.create(
             username="user4",
-            email="user@localhost",
+            email="user4@localhost",
             password="eluwina1234",
         )
 
@@ -49,28 +49,51 @@ class AuthTestCases(APITestCase):
         )
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+    def test_registration_too_simple_password(self) -> None:
+        data = {
+            "username": "elko",
+            "email": "user2@gmail.com",
+            "password1": "admin",
+            "password2": "admin"
+        }
+
+        response = self.client.post(
+            "/api/v1/users/auth/register/",
+            data
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
-    
-    # def test_login(self) -> None:
 
-    #     data = {
-    #         "email": "test@localhost",
-    #         "password": "eluwina1234"
-    #     }
+    def test_registration_too_wrong_email(self) -> None:
+        data = {
+            "username": "elko",
+            "email": "user2.com",
+            "password1": "adminadmin",
+            "password2": "adminadmin"
+        }
 
-    #     response = self.client.post(
-    #         "/api/v1/users/auth/login/",
-    #         data
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        response = self.client.post(
+            "/api/v1/users/auth/register/",
+            data
+        )
 
-    # def test_logout(self) -> None:
-    #     # raise NotImplementedError
-    #     pass
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-# class GetPostsTests(APITestCase):
 
-#     def test_getting_all_posts(self) -> None:
-#         # raise NotImplementedError
-#         pass
+    def test_login_wrong_credentials(self) -> None:
+
+        data = {
+            "email": self.user.email,
+            "password": "adminadmin"
+        }
+
+        response = self.client.post(
+            "/api/v1/users/auth/login/",
+            data
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
