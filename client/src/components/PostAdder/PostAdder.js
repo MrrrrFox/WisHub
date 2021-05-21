@@ -80,6 +80,26 @@ const PostAdder = ({user}) => {
 
 
   const handlePostAdder = (post) => {
+    console.log(post);
+              post['author'] = user.pk
+              axios.post('v1/wishub/posts/', post)
+                .then(res => {
+                  if(res.status === 201){
+                    history.push(`/posts/${post.subject}`)
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data); // => the response payload
+                    var err = document.getElementById("error");
+          
+                    var message = error.response.data["link"][1];
+
+                    typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "Error";
+
+                    err.style.color = "red";
+                    }
+                });/*
     axios.get(`v1/wishub/posts/${post.subject}/by-subject`)
       .then(res => {
         if(res.status === 200){
@@ -103,7 +123,7 @@ const PostAdder = ({user}) => {
               err.innerHTML = "Link is not valid.";
               err.style.color = "red";
             }
-            else{
+            //else{
               var err = document.getElementById("error");
               err.innerHTML = "";
               console.log(post);
@@ -119,7 +139,7 @@ const PostAdder = ({user}) => {
                     console.log(error.response.data); // => the response payload
                     }
                 });
-            }
+           // }
           }
         }
       })
@@ -127,7 +147,7 @@ const PostAdder = ({user}) => {
         if( error.response ){
           console.log(error.response.data); // => the response payload
           }
-      });
+      });*/
   };
 
   return (
