@@ -93,7 +93,7 @@ const PostAdder = ({user}) => {
                     console.log(error.response.data); // => the response payload
                     var err = document.getElementById("error");
           
-                    var message = error.response.data["link"][1];
+                    var message = error.response.data["link"];
 
                     typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "Error";
 
@@ -110,20 +110,6 @@ const PostAdder = ({user}) => {
             err.style.color = "red";
           }
           else {
-            
-            var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-                '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-                '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-                '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-            const valid = pattern.test(post.link);
-            if(!valid) {
-              var err = document.getElementById("error");
-              err.innerHTML = "Link is not valid.";
-              err.style.color = "red";
-            }
-            //else{
               var err = document.getElementById("error");
               err.innerHTML = "";
               console.log(post);
@@ -139,7 +125,7 @@ const PostAdder = ({user}) => {
                     console.log(error.response.data); // => the response payload
                     }
                 });
-           // }
+            }
           }
         }
       })
