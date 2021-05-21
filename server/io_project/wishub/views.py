@@ -1,15 +1,17 @@
+from users.models import CustomUser
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from .models import Post, Subject, Domain
-from .serializers import PostSerializer, SubjectSerializer, DomainSerializer
-from users.models import CustomUser
+from .models import Post, Subject, Domain, Comment
+from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 
+from .utils import VoteType
 
 # Create your views here.
+
 
 # After tutorial:
 class PostViewSet(viewsets.ModelViewSet):
@@ -19,6 +21,7 @@ class PostViewSet(viewsets.ModelViewSet):
     To get all the posts from the subject e.g. with id=1, use URL like below:
     /posts/1/by-subject/'''
 
+    # model = Post
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -38,7 +41,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return JsonResponse(serializer.data, safe=False)
 
     @action(methods=['post'], detail=True, url_path='vote-post')
-    def vote_post(self, request, pk=None):
+    def vote_post(self, request, pk=None) -> JsonResponse:
         """Request should look like this:
             {
                 "user_id" : [number with id],
@@ -47,16 +50,38 @@ class PostViewSet(viewsets.ModelViewSet):
         try:
             desired_post = Post.objects.filter(id=pk)[0]
             current_user = CustomUser.objects.filter(id = request.data['user_id'])[0]
-            if request.data['vote_type']=="up":
+            if request.data['vote_type'] == VoteType.UP:
                 desired_post.upvote(current_user)
-            elif request.data['vote_type']=="down":
+
+            elif request.data['vote_type'] == VoteType.DOWN:
                 desired_post.downvote(current_user)
             else:
                 print("Incorrect vote_type parameter in the request")
         except Exception as ex:
-            print(ex)
+            return JsonResponse({"error_message": str(ex) }, status_codes=status.HTTP_405_METHOD_NOT_ALLOWED)
         return JsonResponse(self.serializer_class(desired_post).data, safe=False)
+    
+    @action(methods=['post'], detail=True, url_path='comment', url_name='comment')
+    def comment_post(self, request, pk=None) -> JsonResponse:
+        post = Post.objects.filter(id=pk).first()
+        post.comment(**request.data)
 
+        return self.comments(None, pk=pk)
+
+    @action(methods=['get'], detail=True, url_path='comments', url_name='comments')
+    def comments(self, request, pk=None) -> JsonResponse:
+        post = Post.objects.filter(id=pk).first()
+
+        return JsonResponse(
+            CommentSerializer(
+                post.get_comments(), 
+                many=True, 
+                fields=('id', 'author', 'body', 'created_date', 'num_upvoted', 'num_downvoted')
+            )\
+            .data,
+            safe=False
+            )
+        
 class SubjectViewSet(viewsets.ModelViewSet):
     '''ViewSet class for the Subjects
 
@@ -79,6 +104,67 @@ class DomainViewSet(viewsets.ModelViewSet):
     serializer_class = DomainSerializer
 
 
+class CommentViewSet(viewsets.ModelViewSet):
+    # lookup_field = 'pk'
+    # lookup_url_kwarg = 'post_pk'
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+    # @action(methods=['get'], detail=True)
+    # def comments(self, request, pk=None) -> JsonResponse:
+    #     post = Post.objects.filter(id=pk).first()
+
+    #     return JsonResponse(
+    #         CommentSerializer(
+    #             post.get_comments(), 
+    #             many=True, 
+    #             fields=('id', 'author', 'body', 'created_date', 'num_upvoted', 'num_downvoted')
+    #         )\
+    #         .data,
+    #         safe=False
+    #         )
+
+    # @action(methods=['get'], detail=True)
+    # def view_comment(self, request, pk=None, **kwargs) -> JsonResponse:
+    #     print("elo")
+    #     post_id = kwargs.get("post_pk")
+    #     print(post_id)
+    #     comment_id = kwargs.get("comment_pk")
+    #     print(comment_id)
+    #     print(pk)
+    #     print("elo")
+
+    #     comment = Comment.objects.filter(id=comment_id)
+
+    #     return JsonResponse(
+    #         CommentSerializer(comment).data,
+    #         safe=False
+    #     )
+
+    # @action(methods=['post'], detail=True, url_path='vote-comment')
+    # def vote_post(self, request, **kwargs) -> JsonResponse:
+    #     """Request should look like this:
+    #         {
+    #             "user_id" : [number with id],
+    #             "vote_type": "up"/"down"
+    #         }"""
+    #     try:
+    #         post_id = kwargs.get("pk")
+    #         comment_id = kwargs.get("comment_pk")
+    #         desired_comment= Comment.objects.filter(id=post_id)[0]
+    #         current_user = CustomUser.objects.filter(id=request.data['user_id'])[0]
+    #         if request.data.vote_type == VoteType.UP:
+    #             desired_comment.upvote(current_user)
+
+    #         elif request.data.vote_type == VoteType.DOWN:
+    #             desired_comment.downvote(current_user)
+    #         else:
+    #             print("Incorrect vote_type parameter in the request")
+    #     except Exception as ex:
+    #         return JsonResponse({"error_message": str(ex) }, status_codes=status.HTTP_405_METHOD_NOT_ALLOWED)
+    #     return JsonResponse(self.serializer_class(desired_comment).data, safe=False)
+
 # example view
 def my_view(request):
     return HttpResponse('<h1>Page was found</h1>')
@@ -92,6 +178,13 @@ def post_detail(request, year, month, day, post):
                              created__year=year,
                              created__month=month,
                              created__day=day)
-    return render(request,
-                  'wishub/post/detail.html',
-                  {'post': post})
+
+
+    return render(
+        request,
+        'wishub/post/detail.html',
+        {
+            'post': post
+        }
+        )
+

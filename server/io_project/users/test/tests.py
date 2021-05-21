@@ -6,15 +6,34 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
-from .models import CustomUser
+from ..models import CustomUser
 
 
 class AuthTestCases(APITestCase):
 
     def setUp(self) -> None:
         self.user = CustomUser.objects.create(
+            username="user1",
             email="test@loclahost",
             password="eluwina1234"
+        )
+
+        CustomUser.objects.create(
+            username="user2",
+            email="user@localhost",
+            password="eluwina1234",
+        )
+
+        CustomUser.objects.create(
+            username="user3",
+            email="user@localhost",
+            password="eluwina1234",
+        )
+
+        CustomUser.objects.create(
+            username="user4",
+            email="user@localhost",
+            password="eluwina1234",
         )
 
     def test_registration(self) -> None:
@@ -31,7 +50,6 @@ class AuthTestCases(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     
-        status.HTTP_405_METHOD_NOT_ALLOWED
     
     # def test_login(self) -> None:
 
