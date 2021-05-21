@@ -36,7 +36,7 @@ class Post(models.Model):
     )
     #TO DO: related_name argument for author? To add or not?
     author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    link = models.URLField(default=None, validators=[url_validator]) 
+    link = models.URLField(default=None, validators=[url_validator], unique=True)
     description = models.TextField(max_length = 300)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,
                     blank=True, null=True)#TO DO: add unique=true (later)
