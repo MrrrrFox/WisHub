@@ -73,8 +73,8 @@ class Post(models.Model):
 
 #trying to implement voting
 class UserVotes(models.Model):
-    user = models.ForeignKey(CustomUser, related_name="user_votes", on_delete=models.PROTECT)
-    post = models.ForeignKey(Post, related_name="post_votes", on_delete=models.PROTECT)
+    user = models.ForeignKey(CustomUser, related_name="user_votes", on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="post_votes", on_delete=models.CASCADE)
     vote_type = models.CharField(max_length=5)
 
     class Meta:
