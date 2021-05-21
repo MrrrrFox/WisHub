@@ -85,14 +85,48 @@ const PostAdder = ({user}) => {
   }, [])
 
 
-
   const handlePostAdder = (post) => {
-    console.log(post)
-    post['author'] = user.pk
-    axios.post('v1/wishub/posts/', post)
+    axios.get(`v1/wishub/posts/${post.subject}/by-subject`)
       .then(res => {
-        if(res.status === 201){
-          history.push(`/posts/${post.subject}`)
+        if(res.status === 200){
+          const idx = res.data.findIndex(a => a["link"] === post.link);
+          if(idx !== -1) {
+            var err = document.getElementById("error");
+            err.innerHTML = "Post with this subject and link is already added."
+            err.style.color = "red";
+          }
+          else {
+            
+            var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+                '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+                '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            const valid = pattern.test(post.link);
+            if(!valid) {
+              var err = document.getElementById("error");
+              err.innerHTML = "Link is not valid.";
+              err.style.color = "red";
+            }
+            else{
+              var err = document.getElementById("error");
+              err.innerHTML = "";
+              console.log(post);
+              post['author'] = user.pk
+              axios.post('v1/wishub/posts/', post)
+                .then(res => {
+                  if(res.status === 201){
+                    history.push(`/posts/${post.subject}`)
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data); // => the response payload
+                    }
+                });
+            }
+          }
         }
       })
       .catch((error) => {
@@ -106,6 +140,7 @@ const PostAdder = ({user}) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <p id="error"></p>
         <Typography component="h1" variant="h5">
           New Post
         </Typography>
