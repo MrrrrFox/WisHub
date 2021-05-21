@@ -2,6 +2,7 @@ from django.db import models, IntegrityError
 from django.utils import timezone
 # from django.contrib.auth.models import User #is it making a proper table?
 from users.models import CustomUser
+from .utils import url_validator, VoteType
 
 # Create your models here.
 
@@ -25,7 +26,6 @@ class Subject(models.Model):
     def __str__(self):
         return self.title
 
-
 class Post(models.Model):
     """Represents a singular post with a link to some learning materials"""
 
@@ -36,7 +36,7 @@ class Post(models.Model):
     )
     #TO DO: related_name argument for author? To add or not?
     author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    link = models.CharField(max_length=100, default=None) #TO DO: Some validation?
+    link = models.URLField(default=None, validators=[url_validator]) 
     description = models.TextField(max_length = 300)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,
                     blank=True, null=True)#TO DO: add unique=true (later)
@@ -47,9 +47,28 @@ class Post(models.Model):
     num_upvoted = models.IntegerField(default=0)
     num_downvoted = models.IntegerField(default=0)
 
+
+    @property
+    def num_comments(self) -> int:
+        return Comment.objects.filter(post=self).count()
+    
+    def get_comments(self):
+        return Comment.objects.filter(post=self)
+
+    def comment(self, **kwargs):
+        author = CustomUser.objects.filter(id=kwargs.get("author")).first()
+        del kwargs["author"]
+
+        Comment.objects.create(
+            post=self,
+            author=author,
+            **kwargs
+            )
+    
+
     def upvote(self, user):
         try:
-            self.post_votes.create(user=user, post=self, vote_type="up")
+            UserVotes.objects.create(user=user, post=self, vote_type=VoteType.UP)
             self.num_upvoted += 1
             self.save()
         except IntegrityError:
@@ -58,7 +77,7 @@ class Post(models.Model):
 
     def downvote(self, user):
         try:
-            self.post_votes.create(user=user, post=self, vote_type="down")
+            UserVotes.objects.create(user=user, post=self, vote_type=VoteType.DOWN)
             self.num_downvoted += 1
             self.save()
         except IntegrityError:
@@ -75,7 +94,55 @@ class Post(models.Model):
 class UserVotes(models.Model):
     user = models.ForeignKey(CustomUser, related_name="user_votes", on_delete=models.PROTECT)
     post = models.ForeignKey(Post, related_name="post_votes", on_delete=models.PROTECT)
-    vote_type = models.CharField(max_length=5)
+    vote_type = models.CharField(max_length=5, choices=VoteType.choices)
 
     class Meta:
         unique_together = ('user', 'post')
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    body = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+    approved_comment = models.BooleanField(default=True)
+
+    @property
+    def num_upvoted(self) -> int:
+        return CommentVotes.objects.filter(comment=self, vote_type=VoteType.UP).count()
+
+    @property
+    def num_downvoted(self) -> int:
+        return CommentVotes.objects.filter(comment=self, vote_type=VoteType.DOWN).count()
+
+    def approve(self) -> None:
+        self.approved_comment = True
+        self.save()
+
+    def str(self) -> str:
+        return self.body
+
+    def upvote(self, user) -> bool:
+        try:
+            CommentVotes.objects.create(user=user, comment=self, vote_type=VoteType.UP)
+        except IntegrityError:
+            raise Exception('already_voted')
+        return True
+
+    def downvote(self, user) -> bool:
+        try:
+            CommentVotes.objects.create(user=user, comment=self, vote_type=VoteType.DOWN)
+        except IntegrityError:
+            raise Exception('already_voted')
+        return True
+
+    def __str__(self): 
+        return self.body
+
+class CommentVotes(models.Model):
+    user = models.ForeignKey(CustomUser, related_name="user_comment_votes", on_delete=models.PROTECT)
+    comment = models.ForeignKey(Comment, related_name="comment_votes", on_delete=models.PROTECT)
+    vote_type = models.CharField(max_length=5, choices=VoteType.choices)
+
+    class Meta:
+        unique_together = ('user', 'comment')
