@@ -31,7 +31,8 @@ const UserPosts = ({userId}) => {
     >
       {userPosts
         ? userPosts.map((post) =>
-            <UserPost key={post.id} post={post} fetchUserPosts={fetchUserPosts} />
+          <Grid item xs={9}>
+            <UserPost key={post.id} post={post} fetchUserPosts={fetchUserPosts} /></Grid>
         ) : null
       }
     </Grid>

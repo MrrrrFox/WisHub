@@ -35,7 +35,7 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True, url_path='by-author',
         url_name='by_author')
     def get_post_by_author_id(self, request, pk=None):
-        print(request.data['email'])
+        # print(request.data['email'])
         posts = Post.objects.filter(author = pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)

@@ -55,8 +55,8 @@ const LinkBox = (props) => {
       setDownCount(downCount - 1);
     colorVote === 'green' ? setColorVote('black') : setColorVote('green');
     //style={{ color: colorVote === 'red' ? 'black' : colorVote }}*/
-
-    const vote = {
+    if(user !== null){
+      const vote = {
       "user_id" : user["pk"],
       "vote_type": "up"
     }
@@ -74,6 +74,8 @@ const LinkBox = (props) => {
           console.log(error.response.data); // => the response payload
           }
       });
+    }
+
   };
 
   const [downCount, setDownCount] = useState(numDownvoted);
@@ -83,8 +85,8 @@ const LinkBox = (props) => {
     if(colorVote === 'green')
       setUpCount(upCount - 1);
     colorVote === 'red' ? setColorVote('black') : setColorVote('red');*/
-
-    const vote = {
+    if(user!==null){
+      const vote = {
       "user_id" : user["pk"],
       "vote_type": "down"
     }
@@ -102,6 +104,8 @@ const LinkBox = (props) => {
           console.log(error.response.data); // => the response payload
           }
       });
+    }
+
   };
 
   const classes = useStyles();

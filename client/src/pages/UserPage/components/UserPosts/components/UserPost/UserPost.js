@@ -34,7 +34,7 @@ const UserPost = ({post, fetchUserPosts}) => {
       alignItems={"center"}
     >
 
-      <Grid item>
+      <Grid item xs={6}>
         <LinkBox key={post.id} post={post}/>
       </Grid>
       <Grid item>
