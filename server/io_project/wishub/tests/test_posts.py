@@ -53,6 +53,21 @@ class PostTestCases(TestSetUp):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_post_post_with_wrong_link(self) -> None:
+        item = {
+            "author": 1,
+            "link": "this.link.dont.exist",
+            "description": "Wonderful book",
+            "subject": 1,
+            "level": "IN"
+        }
+
+        old_number_of_posts = Post.objects.count()
+        response = self.client.post("/api/v1/wishub/posts/", data=item)
+        returned = json.loads(response.content)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Post.objects.count(), old_number_of_posts)
+
 
     def test_post_upvote(self) -> None:
         data = {
