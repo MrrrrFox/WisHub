@@ -37,7 +37,7 @@ const Post = () => {
   let comments
 
   const fetchPost = () => {
-    axios.get(`v1/wishub/posts/${post.id}/`)
+    axios.get(`v1/wishub/posts/${id}/`)
       .then(res => {
         if(res.status === 200){
           console.log(res.data)

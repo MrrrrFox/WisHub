@@ -44,7 +44,7 @@ const Comment = ({user}) => {
   const handleComment = (comment) => {
     console.log(comment)
     comment['author'] = user.pk
-    axios.post('v1/wishub/posts/${post.id}/comments', comment)
+    axios.post('v1/wishub/posts/${id}/comments', comment)
       .then(res => {
         if(res.status === 201){
           history.push(`/comments/${comment.id}`)

@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "../../axios.config";
 import { Grid, makeStyles, CircularProgress, Button } from '@material-ui/core';
 import { LinkBox, Sort } from '../../components';
+import Link from "@material-ui/core/Link";
+import {AddComment} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   main: {

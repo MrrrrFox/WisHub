@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
+import {Button, IconButton} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
@@ -40,18 +40,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddCommentButton = ({ classes, record }) => (
-  <Button
-    className={classes.button}
-    variant="raised"
-    component={Link}
-    to={`/comments/create?post_id=${record.id}`}
-    label="Add a comment"
-    title="Add a comment"
-  >
-    <AddComment />
-  </Button>
-);
 
 const LinkBox = (props) => {
   let { description, link, author, numDownvoted, numUpvoted } = props.post;
@@ -92,11 +80,13 @@ const LinkBox = (props) => {
           <NavigationIcon className={classes.transformation} />
           {downCount}
         </Button>
+        <IconButton onClick={() => window.open('v1/wishub/posts/${id}/comments')}>
+          <AddComment/>
+        </IconButton>
         {/*<Button>*/}
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
         {/*</Button>*/}
-        <AddCommentButton />
         <Typography className={classes.username} variant="h6">
           {author}
         </Typography>
