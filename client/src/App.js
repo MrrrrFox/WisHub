@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {TopBar, Navbar, Login, Register, PostAdder} from './components';
+import {TopBar, Navbar, Login, Register, PostAdder, Footer} from './components';
 import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -61,6 +61,7 @@ const App = () => {
       <div className="App">
         <TopBar isLogged = {isLogged} setLogged={setLogged} user={user}/>
         <Navbar/>
+        <Footer/ >
       </div>
     </BrowserRouter>
   );

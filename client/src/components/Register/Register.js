@@ -53,7 +53,7 @@ const Register = () => {
 
 
   const handleRegister = (user) => {
-
+    console.log(user)
 
     axios.post('v1/users/auth/register/',user)
       .then(res => {
@@ -97,7 +97,38 @@ const Register = () => {
         <form
           onSubmit = {handleSubmit(handleRegister)}
           className={classes.form}
-        >          <Controller
+        >    
+        <Controller
+            render = {({field})=> (
+                <TextField {...field}
+                    fullWidth
+                    label="First Name"
+                    required
+                    onChange={(e) => field.onChange(e)}
+                    value={field.value}
+                />
+            )}
+            name="firstName"
+            control={control}
+            defaultValue=""
+            label="First Name"
+          />
+          <Controller
+            render = {({field})=> (
+                <TextField {...field}
+                    fullWidth
+                    label="Last Name"
+                    required
+                    onChange={(e) => field.onChange(e)}
+                    value={field.value}
+                />
+            )}
+            name="lastName"
+            control={control}
+            defaultValue=""
+            label="Last Name"
+          />
+        <Controller
             render = {({field})=> (
                 <TextField {...field}
                     fullWidth
