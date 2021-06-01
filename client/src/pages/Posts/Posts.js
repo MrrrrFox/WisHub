@@ -21,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Posts = () => {
+const Posts = ({user}) => {
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
+  const [orgPosts, setOrgPosts] = useState(null);
   const { id } = useParams();
 
   const fetchPosts = () => {
@@ -32,6 +33,7 @@ const Posts = () => {
         if(res.status === 200){
           console.log(res.data)
           setPosts(res.data)
+          setOrgPosts(res.data);
         }
       })
       .catch((error) => {
@@ -62,7 +64,7 @@ const Posts = () => {
       justify="flex-start"
       direction="column"
       >
-        <Sort posts={posts} onSort={onSort}/>
+        <Sort posts={orgPosts} onSort={onSort}/>
     </Grid>
       <Grid
         container
@@ -71,7 +73,7 @@ const Posts = () => {
         id="postsList"
       >
         {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} />) : null
+          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} />) : null
           }
       </Grid>
     </Grid>

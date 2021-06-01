@@ -46,12 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const subjects = [
-//   { value: "mathematics", label: "Mathematics" },
-//   { value: "physics", label: "Physics" },
-//   { value: "programming", label: "Programming" },
-//   { value: "computer science", label: "Computer Science" },
-// ];
 
 const levels = [
   { value: "BE", label: "Beginer" },
@@ -85,27 +79,68 @@ const PostAdder = ({user}) => {
   }, [])
 
 
-
   const handlePostAdder = (post) => {
-    console.log(post)
-    post['author'] = user.pk
-    axios.post('v1/wishub/posts/', post)
+    console.log(post);
+              post['author'] = user.pk
+              axios.post('v1/wishub/posts/', post)
+                .then(res => {
+                  if(res.status === 201){
+                    history.push(`/posts/${post.subject}`)
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data); // => the response payload
+                    var err = document.getElementById("error");
+          
+                    var message = error.response.data["link"];
+
+                    typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "Error";
+
+                    err.style.color = "red";
+                    }
+                });/*
+    axios.get(`v1/wishub/posts/${post.subject}/by-subject`)
       .then(res => {
-        if(res.status === 201){
-          history.push(`/posts/${post.subject}`)
+        if(res.status === 200){
+          const idx = res.data.findIndex(a => a["link"] === post.link);
+          if(idx !== -1) {
+            var err = document.getElementById("error");
+            err.innerHTML = "Post with this subject and link is already added."
+            err.style.color = "red";
+          }
+          else {
+              var err = document.getElementById("error");
+              err.innerHTML = "";
+              console.log(post);
+              post['author'] = user.pk
+              axios.post('v1/wishub/posts/', post)
+                .then(res => {
+                  if(res.status === 201){
+                    history.push(`/posts/${post.subject}`)
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data); // => the response payload
+                    }
+                });
+            }
+          }
         }
       })
       .catch((error) => {
         if( error.response ){
           console.log(error.response.data); // => the response payload
           }
-      });
+      });*/
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <p id="error"></p>
         <Typography component="h1" variant="h5">
           New Post
         </Typography>
