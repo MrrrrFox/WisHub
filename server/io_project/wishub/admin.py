@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Subject, Domain
+from .models import Post, Subject, Domain, Comment
 from django.urls import include, path
 
 
@@ -21,6 +21,10 @@ class SubjectAdmin(admin.ModelAdmin):
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('id', 'title',)
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id','body', 'author', 'post', 'created_date', 'approved_comment')
+
+
 
 # Register your models here.
 
@@ -32,3 +36,4 @@ urlpatterns = [
 admin.site.register(Post, PostAdmin)
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(Subject, SubjectAdmin)
+admin.site.register(Comment, CommentAdmin)
