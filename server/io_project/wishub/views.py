@@ -71,7 +71,22 @@ class PostViewSet(viewsets.ModelViewSet):
             {
                 "user_id" : [number with id]
             }"""
-        pass
+        result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
+        if len(result) == 0:
+            print("User was not voting yet!")
+            return JsonResponse({"error_message": "User did not vote yet!" })
+        elif len(result) == 1:
+            post = Post.objects.filter(id=pk)[0]
+            if result[0].vote_type == "up":
+                post.num_upvoted -= 1
+            elif result[0].vote_type == "down":
+                post.num_downvoted -= 1
+            result.delete()
+            post.save()
+            return JsonResponse({"success_message": "Vote was deleted!" })
+        else:
+            return JsonResponse({"error_message": "Unspecified number of votes" })
+
 
     @action(methods=['post'], detail=True, url_path='check-votes')
     def check_votes_for_user(self, request, pk=None):
