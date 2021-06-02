@@ -90,7 +90,9 @@ class Post(models.Model):
     class Meta:
         ordering = ( '-created', )
 
-#trying to implement voting
+# trying to implement voting
+# From what I understand, objects represent one action of giving a vote
+# of a specific type (up/down) for some specific post
 class UserVotes(models.Model):
     user = models.ForeignKey(CustomUser, related_name="user_votes", on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="post_votes", on_delete=models.CASCADE)

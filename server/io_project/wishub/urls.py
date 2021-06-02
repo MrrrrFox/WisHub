@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'posts', views.PostViewSet)
 router.register(r'subjects', views.SubjectViewSet)
 router.register(r'domains', views.DomainViewSet)
+router.register(r'comments', views.CommentViewSet)
 
 app_name = 'wishub'
 urlpatterns = [
