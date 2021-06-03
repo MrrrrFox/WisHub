@@ -1,7 +1,7 @@
 from users.models import CustomUser
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from .models import Post, Subject, Domain, Comment
+from .models import Post, Subject, Domain, Comment, UserVotes
 from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -63,6 +63,47 @@ class PostViewSet(viewsets.ModelViewSet):
 
             #here returning error code
         return JsonResponse(self.serializer_class(desired_post).data, safe=False)
+
+    #TO DO: implement this guy
+    @action(methods=['post'], detail=True, url_path='unvote-post')
+    def unvote_post(self, request, pk=None) -> JsonResponse:
+        """Request should look like this:
+            {
+                "user_id" : [number with id]
+            }"""
+        result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
+        if len(result) == 0:
+            print("User was not voting yet!")
+            return JsonResponse({"error_message": "User did not vote yet!" })
+        elif len(result) == 1:
+            post = Post.objects.filter(id=pk)[0]
+            if result[0].vote_type == "up":
+                post.num_upvoted -= 1
+            elif result[0].vote_type == "down":
+                post.num_downvoted -= 1
+            result.delete()
+            post.save()
+            return JsonResponse({"success_message": "Vote was deleted!" })
+        else:
+            return JsonResponse({"error_message": "Unspecified number of votes" })
+
+
+    @action(methods=['post'], detail=True, url_path='check-votes')
+    def check_votes_for_user(self, request, pk=None):
+        """Request should look like this:
+            {
+                "user_id" : [number with id]
+            }"""
+        result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
+        if len(result) == 0:
+            print("User was not voting yet!")
+            return JsonResponse({"error_message": "User did not vote yet!" })
+        else:
+            try:
+                vote = result[0]
+                return JsonResponse({"vote_type": str(vote.vote_type)})
+            except Exception as ex:
+                return JsonResponse({"error_message": str(ex) })
 
     @action(methods=['post'], detail=True, url_path='comment', url_name='comment')
     def comment_post(self, request, pk=None) -> JsonResponse:
@@ -191,4 +232,3 @@ def post_detail(request, year, month, day, post):
             'post': post
         }
         )
-
