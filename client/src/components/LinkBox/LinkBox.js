@@ -44,10 +44,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { id, description, link, author, numDownvoted, numUpvoted ,level, date } = props.post;
+  let { id, description, link, author, numDownvoted, numUpvoted ,level, created } = props.post;
   let user = props.user;
   const [upCount, setUpCount] = useState(numUpvoted);
   const [colorVote, setColorVote] = useState('black');
+  const idx = created.indexOf('T');
+  var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
 
   const incrementCount = () => {
     /*colorVote === 'green' ? setUpCount(upCount - 1) : setUpCount(upCount + 1);
