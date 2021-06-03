@@ -66,12 +66,11 @@ const SignIn = () => {
   }, []);
   
   const handleLogin = (user) => {
-    console.log(user);
     axios.post('v1/users/auth/login/',user)
       .then(res => {
         if(res.status === 200){
-          localStorage.clear();
           localStorage.setItem('isLogged', res.data.key);
+          window.dispatchEvent( new Event('storage') );
           history.push("/")
         }
       })

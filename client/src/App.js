@@ -14,11 +14,10 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   window.addEventListener('storage',  () => {
-    setLogged(localStorage.getItem('isLogged') );
+    setLogged(localStorage.getItem('isLogged'));
   });
 
   const getUser = () => {
-    // console.log(isLogged)
     axios.get('v1/users/auth/user/',{headers:{'Authorization': `Token ${isLogged}`}})
       .then(res => {
         if(res.status === 200){
@@ -32,13 +31,10 @@ const App = () => {
       });
   }
   useEffect(() => {
-    // if( isLogged !== null){
-    //   getUser()
-    // }
-    // else {
-    //   setUser(null)
-    // }
-    getUser()
+    if(isLogged != null){
+      getUser()
+    }
+
   }, [isLogged])
   return (
     <BrowserRouter>
@@ -59,9 +55,9 @@ const App = () => {
       </Switch>
       <CssBaseline />
       <div className="App">
-        <TopBar isLogged = {isLogged} setLogged={setLogged} user={user}/>
+        <TopBar isLogged = {isLogged} setLogged={setLogged} user={user} setUser={setUser}/>
         <Navbar/>
-        <Footer/ >
+        <Footer/>
       </div>
     </BrowserRouter>
   );
