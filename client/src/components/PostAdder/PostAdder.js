@@ -80,7 +80,7 @@ const PostAdder = ({user}) => {
 
 
   const handlePostAdder = (post) => {
-    console.log(post);
+
               post['author'] = user.pk
               axios.post('v1/wishub/posts/', post)
                 .then(res => {

@@ -6,6 +6,7 @@ import {Grid} from "@material-ui/core";
 const UserPosts = ({userId}) => {
   const [userPosts, setUserPosts] = useState(null)
   const fetchUserPosts = () => {
+
     axios.get(`v1/wishub/posts/${userId}/by-author`)
       .then(res => {
         if(res.status === 200){
@@ -26,10 +27,10 @@ const UserPosts = ({userId}) => {
       container
       id="postsList"
       justify="space-around"
-      item xs={9}
+      item xs={12}
       alignItems={"flex-start"}
     >
-      {userPosts
+      {userPosts != null
         ? userPosts.map((post) =>
           <Grid item xs={9}>
             <UserPost key={post.id} post={post} fetchUserPosts={fetchUserPosts} /></Grid>

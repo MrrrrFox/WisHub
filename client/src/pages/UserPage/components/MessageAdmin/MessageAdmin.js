@@ -15,7 +15,7 @@ const MessageAdmin = () => {
     axios.post(`v1/wishub/admin-message/`, data)
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
+
           reset()
         }
       })

@@ -21,11 +21,14 @@ class SubjectAdmin(admin.ModelAdmin):
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('id', 'title',)
 
+
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'author', 'body', 'post', 'created_date', 'approved_comment')
 
+
 class UserVotesAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'post', 'vote_type')
+
 
 # Register your models here.
 

@@ -62,11 +62,11 @@ const LinkBox = (props) => {
       "user_id" : user["pk"],
       "vote_type": "up"
     }
-    console.log(vote);
+
     axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
+
           setUpCount(upCount + 1);
           setColorVote('green');
         }
@@ -92,11 +92,11 @@ const LinkBox = (props) => {
       "user_id" : user["pk"],
       "vote_type": "down"
     }
-    console.log(vote);
+
     axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
       .then(res => {
         if(res.status === 200){
-          console.log(res.data)
+
           setDownCount(downCount + 1);
           setColorVote('red');
         }

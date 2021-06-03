@@ -49,7 +49,7 @@ const Posts = ({user}) => {
 
   const onSort = (e) => {
     setPosts([...e]);
-    console.log(posts);
+
   };
 
   return (

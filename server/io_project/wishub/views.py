@@ -10,6 +10,7 @@ from rest_framework import viewsets, status
 
 from .utils import VoteType
 
+
 # Create your views here.
 
 
@@ -33,10 +34,10 @@ class PostViewSet(viewsets.ModelViewSet):
         return JsonResponse(serializer.data, safe=False)
 
     @action(methods=['get'], detail=True, url_path='by-author',
-        url_name='by_author')
+            url_name='by_author')
     def get_post_by_author_id(self, request, pk=None):
         # print(request.data['email'])
-        posts = Post.objects.filter(author = pk)
+        posts = Post.objects.filter(author=pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -50,21 +51,21 @@ class PostViewSet(viewsets.ModelViewSet):
 
         try:
             desired_post = Post.objects.filter(id=pk)[0]
-            current_user = CustomUser.objects.filter(id = request.data['user_id'])[0]
+            current_user = CustomUser.objects.filter(id=request.data['user_id'])[0]
             if request.data['vote_type'] == VoteType.UP:
                 desired_post.upvote(current_user)
 
             elif request.data['vote_type'] == VoteType.DOWN:
                 desired_post.downvote(current_user)
             else:
-                return JsonResponse({"error_message" : "Vote type not allowed" }, status=status.HTTP_501_NOT_IMPLEMENTED)
+                return JsonResponse({"error_message": "Vote type not allowed"}, status=status.HTTP_501_NOT_IMPLEMENTED)
         except Exception as ex:
-            return JsonResponse({"error_message": str(ex) }, status_codes=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return JsonResponse({"error_message": str(ex)}, status_codes=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-            #here returning error code
+            # here returning error code
         return JsonResponse(self.serializer_class(desired_post).data, safe=False)
 
-    #TO DO: implement this guy
+    # TO DO: implement this guy
     @action(methods=['post'], detail=True, url_path='unvote-post')
     def unvote_post(self, request, pk=None) -> JsonResponse:
         """Request should look like this:
@@ -74,7 +75,7 @@ class PostViewSet(viewsets.ModelViewSet):
         result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
         if len(result) == 0:
             print("User was not voting yet!")
-            return JsonResponse({"error_message": "User did not vote yet!" })
+            return JsonResponse({"error_message": "User did not vote yet!"})
         elif len(result) == 1:
             post = Post.objects.filter(id=pk)[0]
             if result[0].vote_type == "up":
@@ -83,10 +84,9 @@ class PostViewSet(viewsets.ModelViewSet):
                 post.num_downvoted -= 1
             result.delete()
             post.save()
-            return JsonResponse({"success_message": "Vote was deleted!" })
+            return JsonResponse({"success_message": "Vote was deleted!"})
         else:
-            return JsonResponse({"error_message": "Unspecified number of votes" })
-
+            return JsonResponse({"error_message": "Unspecified number of votes"})
 
     @action(methods=['post'], detail=True, url_path='check-votes')
     def check_votes_for_user(self, request, pk=None):
@@ -97,13 +97,13 @@ class PostViewSet(viewsets.ModelViewSet):
         result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
         if len(result) == 0:
             print("User was not voting yet!")
-            return JsonResponse({"error_message": "User did not vote yet!" })
+            return JsonResponse({"error_message": "User did not vote yet!"})
         else:
             try:
                 vote = result[0]
                 return JsonResponse({"vote_type": str(vote.vote_type)})
             except Exception as ex:
-                return JsonResponse({"error_message": str(ex) })
+                return JsonResponse({"error_message": str(ex)})
 
     @action(methods=['post'], detail=True, url_path='comment', url_name='comment')
     def comment_post(self, request, pk=None) -> JsonResponse:
@@ -121,18 +121,17 @@ class PostViewSet(viewsets.ModelViewSet):
                 post.get_comments(),
                 many=True,
                 fields=('id', 'author', 'body', 'created_date', 'num_upvoted', 'num_downvoted')
-            )\
-            .data,
+            ).data,
             safe=False
-            )
+        )
 
 
 class SubjectViewSet(viewsets.ModelViewSet):
-    '''ViewSet class for the Subjects
+    """ViewSet class for the Subjects
 
     Custom function to filter all the subjects from the desired domain.
     To get all the subjects from the domain e.g. with id=1, use URL like below:
-    /subjects/1/by-domain/'''
+    /subjects/1/by-domain/"""
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
@@ -154,7 +153,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     # lookup_url_kwarg = 'post_pk'
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-
 
     # @action(methods=['get'], detail=True)
     # def comments(self, request, pk=None) -> JsonResponse:
@@ -210,6 +208,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     #         return JsonResponse({"error_message": str(ex) }, status_codes=status.HTTP_405_METHOD_NOT_ALLOWED)
     #     return JsonResponse(self.serializer_class(desired_comment).data, safe=False)
 
+
 # example view
 def my_view(request):
     return HttpResponse('<h1>Page was found</h1>')
@@ -224,11 +223,10 @@ def post_detail(request, year, month, day, post):
                              created__month=month,
                              created__day=day)
 
-
     return render(
         request,
         'wishub/post/detail.html',
         {
             'post': post
         }
-        )
+    )

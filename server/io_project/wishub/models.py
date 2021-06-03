@@ -4,11 +4,12 @@ from django.utils import timezone
 from users.models import CustomUser
 from .utils import url_validator, VoteType
 
+
 # Create your models here.
 
 
 class Domain(models.Model):
-    '''Represents a domain e.g. Programming or Maths, which groups subjects '''
+    """Represents a domain e.g. Programming or Maths, which groups subjects """
 
     title = models.CharField(max_length=30)
 
@@ -21,10 +22,11 @@ class Subject(models.Model):
 
     title = models.CharField(max_length=30)
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE,
-                        blank=True, null=True) #TO DO: add unique=true (later)
+                               blank=True, null=True)  # TO DO: add unique=true (later)
 
     def __str__(self):
         return self.title
+
 
 class Post(models.Model):
     """Represents a singular post with a link to some learning materials"""
@@ -34,19 +36,18 @@ class Post(models.Model):
         ('IN', 'Intermediate'),
         ('AD', 'Advanced'),
     )
-    #TO DO: related_name argument for author? To add or not?
-    author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    # TO DO: related_name argument for author? To add or not?
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     link = models.URLField(default=None, validators=[url_validator], unique=True)
-    description = models.TextField(max_length = 300)
+    description = models.TextField(max_length=300)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,
-                    blank=True, null=True)#TO DO: add unique=true (later)
-    level = models.CharField(max_length = 15, choices = ADVANCEMENT_LEVEL,
-                             default = 'BE')
-    created = models.DateTimeField(auto_now_add = True)
-    updated = models.DateTimeField(auto_now = True)
+                                blank=True, null=True)  # TO DO: add unique=true (later)
+    level = models.CharField(max_length=15, choices=ADVANCEMENT_LEVEL,
+                             default='BE')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     num_upvoted = models.IntegerField(default=0)
     num_downvoted = models.IntegerField(default=0)
-
 
     @property
     def num_comments(self) -> int:
@@ -63,8 +64,7 @@ class Post(models.Model):
             post=self,
             author=author,
             **kwargs
-            )
-
+        )
 
     def upvote(self, user):
         try:
@@ -84,11 +84,12 @@ class Post(models.Model):
             raise Exception('already_voted')
         return 'ok'
 
-    def __str__(self): #TO DO: This one should be changed to sth shorter
+    def __str__(self):  # TO DO: This one should be changed to sth shorter
         return self.description
 
     class Meta:
-        ordering = ( '-created', )
+        ordering = ('-created',)
+
 
 # trying to implement voting
 # From what I understand, objects represent one action of giving a vote
@@ -140,6 +141,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.body
+
 
 class CommentVotes(models.Model):
     user = models.ForeignKey(CustomUser, related_name="user_comment_votes", on_delete=models.PROTECT)

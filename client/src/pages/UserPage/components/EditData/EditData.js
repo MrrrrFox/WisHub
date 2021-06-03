@@ -18,7 +18,7 @@ const EditData = ({user}) => {
   console.log(user)
 
   const handleEdit = (data) => {
-    console.log(data)
+
   }
   return (
     <Container>

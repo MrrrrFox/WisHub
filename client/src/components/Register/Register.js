@@ -53,7 +53,7 @@ const Register = () => {
 
 
   const handleRegister = (user) => {
-    console.log(user)
+
 
     axios.post('v1/users/auth/register/',user)
       .then(res => {
