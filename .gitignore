@@ -139,3 +139,4 @@ cython_debug/
 .vscode/
 .idea/
 *.pyc
+server/io_project/README.md

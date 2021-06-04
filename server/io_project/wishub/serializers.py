@@ -20,8 +20,9 @@ class DynamicFieldsModelSerializer(ModelSerializer):
             existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
-class PostSerializer(ModelSerializer):
 
+class PostSerializer(ModelSerializer):
+    author = UserSerializer()
     class Meta:
         model = Post
         fields = ('id', 'author', 'link', 'description', 'subject', 'level',
