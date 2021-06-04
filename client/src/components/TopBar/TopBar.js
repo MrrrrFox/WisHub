@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({isLogged, setLogged, user}) => {
+const TopBar = ({isLogged, user, setUser}) => {
   const classes = useStyles();
   const history = useHistory()
   const logoutUser = () => {
@@ -55,8 +55,8 @@ const TopBar = ({isLogged, setLogged, user}) => {
       .then(res => {
         if(res.status === 200){
           localStorage.clear();
-          setLogged(null)
-          history.push("/")
+          setUser(null)
+          window.dispatchEvent( new Event('storage') );
         }
       })
       .catch((error) => {

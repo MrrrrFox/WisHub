@@ -15,7 +15,7 @@ const UserData = ({user}) => {
         </Typography>
         <Typography variant="h5" component="h2">
           Michał Kacprzak
-          {/*{user.firstname}*/}  {/*{user.secondname}*/}
+          {user.firstName} {user.lastName}
         </Typography>
         <Typography variant="body2" component="p">
           {user.email}

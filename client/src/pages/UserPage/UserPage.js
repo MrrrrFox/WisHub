@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     maxHeight: '100%',
   },
+  marg: {
+    marginBottom: '80px'
+  }
 }));
 
 
@@ -53,6 +56,7 @@ const UserPage = ({user}) => {
           item xs={12}
           justify="space-around"
           alignContent="center"
+          className={classes.marg}
         >
           <Grid
             container
