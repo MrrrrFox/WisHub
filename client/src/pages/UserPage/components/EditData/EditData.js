@@ -1,13 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import axios from "../../../../axios.config";
 
 import {Container, Grid} from "@material-ui/core";
 import {useForm, Controller, FormProvider} from "react-hook-form";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
+
 
 const EditData = ({user}) => {
   const {handleSubmit, control} = useForm({
@@ -15,10 +14,19 @@ const EditData = ({user}) => {
     }
   );
 
-  console.log(user)
-
   const handleEdit = (data) => {
-
+    console.log(data)
+    axios.put('v1/users/auth/user/',data,{headers:{'Authorization': `Token ${localStorage.getItem('isLogged')}`}})
+      .then(res => {
+        if(res.status === 200){
+          console.log(res.data)
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response);
+          }
+      });
   }
   return (
     <Container>
@@ -58,7 +66,7 @@ const EditData = ({user}) => {
                              value={field.value}
                   />
                 )}
-                name="firstname"
+                name="firstName"
                 control={control}
                 defaultValue=""
                 label="First name"
@@ -73,15 +81,10 @@ const EditData = ({user}) => {
                              value={field.value}
                   />
                 )}
-                name="lastname"
+                name="lastName"
                 control={control}
                 defaultValue=""
                 label="Last name"
-              />
-
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary"/>}
-                label="Remember me"
               />
               <Button
                 type="submit"

@@ -107,24 +107,9 @@ const UserPage = ({user}) => {
             container
             item xs={9}
             direction="column"
-            // justify="space-around"
-            // alignContent="center"
+            justify="space-around"
             alignItems={"center"}
           >
-            {/*<Grid*/}
-            {/*  container*/}
-            {/*  direction="row"*/}
-
-            {/*  justify="space-around"*/}
-            {/*  // alignItems="flex-start"*/}
-            {/*>*/}
-            {/*</Grid>*/}
-            <Grid
-              container
-              justify="space-around"
-              // alignItems={"flex-start"}
-              alignItems={"center"}
-            >
               <Switch>
                 <Route exact path={`${path}`}>
                   <UserPosts userId={user.pk}/>
@@ -139,7 +124,7 @@ const UserPage = ({user}) => {
                   <EditData user={user}/>
                 </Route>
               </Switch>
-            </Grid>
+
           </Grid>
         </Grid>
         :

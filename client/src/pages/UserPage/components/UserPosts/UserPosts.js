@@ -32,7 +32,7 @@ const UserPosts = ({userId}) => {
     >
       {userPosts != null
         ? userPosts.map((post) =>
-          <Grid item xs={9}>
+          <Grid key={post.id} item xs={9}>
             <UserPost key={post.id} post={post} fetchUserPosts={fetchUserPosts} /></Grid>
         ) : null
       }
