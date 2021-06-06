@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const UserPage = ({user}) => {
-
+const UserPage = ({user, getUser}) => {
+  console.log(user)
   let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
@@ -65,7 +65,7 @@ const UserPage = ({user}) => {
             justify="center"
             alignContent="center"
             alignItems={"center"}
-            spacing={3}
+
           >
             <Grid item>
               <ButtonBase className={classes.image}>
@@ -121,7 +121,7 @@ const UserPage = ({user}) => {
                   <UserPosts userId={user.pk}/>
                 </Route>
                 <Route exact path={`${path}/edit`}>
-                  <EditData user={user}/>
+                  <EditData user={user} getUser={getUser}/>
                 </Route>
               </Switch>
 

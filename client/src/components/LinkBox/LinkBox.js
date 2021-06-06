@@ -34,9 +34,9 @@ const useStyles = makeStyles((theme) => ({
     top: '20px',
     right: '30px',
     color: theme.palette.main,
-    textTransform: 'uppercase',
     maxWidth: '300px',
-    fontSize: '15px'
+    fontSize: '15px',
+    textAlign: "end"
   },
   level: {
     fontSize: '15px'
@@ -140,12 +140,8 @@ const LinkBox = (props) => {
           <NavigationIcon className={classes.transformation} style={{ color: colorVote === 'green' ? 'black' : colorVote }} />
           -{downCount}
         </Button>
-        {/*<Button>*/}
-        {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
-        {/*  {comments.length}*/}
-        {/*</Button>*/}
         <Typography className={classes.username} variant="h6">
-          {author}
+          {author.username}
           <br/>
           {date}
         </Typography>

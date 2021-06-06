@@ -2,7 +2,7 @@ from users.models import CustomUser
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import Post, Subject, Domain, Comment, UserVotes
-from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer
+from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer, CreatePostSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -16,15 +16,20 @@ from .utils import VoteType
 
 # After tutorial:
 class PostViewSet(viewsets.ModelViewSet):
-    '''ViewSet class for the Posts
+    """ViewSet class for the Posts
 
     Custom function to filter all the posts from the desired subject.
     To get all the posts from the subject e.g. with id=1, use URL like below:
-    /posts/1/by-subject/'''
+    /posts/1/by-subject/"""
 
     # model = Post
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    # serializer_class = PostSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CreatePostSerializer
+        return PostSerializer
 
     @action(methods=['get'], detail=True, url_path='by-subject',
             url_name='by_subject')
@@ -77,7 +82,7 @@ class PostViewSet(viewsets.ModelViewSet):
         result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
         if len(result) == 0:
             print("User was not voting yet!")
-            return JsonResponse({"error_message": "User did not vote yet!"}, status=status.HTTP_204_NO_CONTENT )
+            return JsonResponse({"error_message": "User did not vote yet!"}, status=status.HTTP_204_NO_CONTENT)
         elif len(result) == 1:
             post = Post.objects.filter(id=pk)[0]
             if result[0].vote_type == "up":
@@ -88,7 +93,8 @@ class PostViewSet(viewsets.ModelViewSet):
             post.save()
             return JsonResponse({"success_message": "Vote was deleted!"})
         else:
-            return JsonResponse({"error_message": "Unspecified number of votes"}, status=status.HTTP_417_EXPECTATION_FAILED)
+            return JsonResponse({"error_message": "Unspecified number of votes"},
+                                status=status.HTTP_417_EXPECTATION_FAILED)
 
     @action(methods=['post'], detail=True, url_path='check-votes')
     def check_votes_for_user(self, request, pk=None):
@@ -118,10 +124,9 @@ class PostViewSet(viewsets.ModelViewSet):
         Gives information about type of votes.
         pk in the route is a user id
         """
-        post_dict = { _.post.id : _.vote_type
-                    for _ in UserVotes.objects.filter(user=pk)}
+        post_dict = {_.post.id: _.vote_type
+                     for _ in UserVotes.objects.filter(user=pk)}
         return JsonResponse(post_dict, safe=False)
-
 
     @action(methods=['post'], detail=True, url_path='comment', url_name='comment')
     def comment_post(self, request, pk=None) -> JsonResponse:

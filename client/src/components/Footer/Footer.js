@@ -6,7 +6,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 const useStyles = makeStyles((theme) => ({
   stickToBottom: {
     width: '100%',
-    position: 'sticky',
+    position: "sticky",
     bottom: 0,
     backgroundColor: theme.palette.main,
     height: '70px',

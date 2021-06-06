@@ -73,7 +73,7 @@ const TopBar = ({isLogged, user, setUser}) => {
       </Typography>
       <Typography className={classes.text} variant="h5">
 
-        <Grid direction="column" className={classes.userSection}>
+        <Grid className={classes.userSection}>
           <div>
             <Typography variant="body4" className={classes.user}>
               {user!= null ? user.username : 'Guest'}
