@@ -36,7 +36,6 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True, url_path='by-author',
             url_name='by_author')
     def get_post_by_author_id(self, request, pk=None):
-        # print(request.data['email'])
         posts = Post.objects.filter(author=pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
@@ -65,17 +64,20 @@ class PostViewSet(viewsets.ModelViewSet):
             # here returning error code
         return JsonResponse(self.serializer_class(desired_post).data, safe=False)
 
-    # TO DO: implement this guy
     @action(methods=['post'], detail=True, url_path='unvote-post')
     def unvote_post(self, request, pk=None) -> JsonResponse:
-        """Request should look like this:
+        """
+        If a user with user_id voted for the post with id = pk,
+        removes its vote.
+        Request should look like this:
             {
                 "user_id" : [number with id]
-            }"""
+            }
+        """
         result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
         if len(result) == 0:
             print("User was not voting yet!")
-            return JsonResponse({"error_message": "User did not vote yet!"})
+            return JsonResponse({"error_message": "User did not vote yet!"}, status=status.HTTP_204_NO_CONTENT )
         elif len(result) == 1:
             post = Post.objects.filter(id=pk)[0]
             if result[0].vote_type == "up":
@@ -86,14 +88,18 @@ class PostViewSet(viewsets.ModelViewSet):
             post.save()
             return JsonResponse({"success_message": "Vote was deleted!"})
         else:
-            return JsonResponse({"error_message": "Unspecified number of votes"})
+            return JsonResponse({"error_message": "Unspecified number of votes"}, status=status.HTTP_417_EXPECTATION_FAILED)
 
     @action(methods=['post'], detail=True, url_path='check-votes')
     def check_votes_for_user(self, request, pk=None):
-        """Request should look like this:
+        """
+        Returns info if user with featured user_id, voted for the post
+        with id = pk argument.
+            Request should look like this:
             {
                 "user_id" : [number with id]
-            }"""
+            }
+        """
         result = UserVotes.objects.filter(user=request.data['user_id'], post=pk)
         if len(result) == 0:
             print("User was not voting yet!")
@@ -105,17 +111,27 @@ class PostViewSet(viewsets.ModelViewSet):
             except Exception as ex:
                 return JsonResponse({"error_message": str(ex)})
 
+    @action(methods=['get'], detail=True, url_path='all-voted-by-user')
+    def all_voted_by_user(self, request, pk=None):
+        """
+        Returns information about all posts voted by the user.
+        Gives information about type of votes.
+        pk in the route is a user id
+        """
+        post_dict = { _.post.id : _.vote_type
+                    for _ in UserVotes.objects.filter(user=pk)}
+        return JsonResponse(post_dict, safe=False)
+
+
     @action(methods=['post'], detail=True, url_path='comment', url_name='comment')
     def comment_post(self, request, pk=None) -> JsonResponse:
         post = Post.objects.filter(id=pk).first()
         post.comment(**request.data)
-
         return self.comments(None, pk=pk)
 
     @action(methods=['get'], detail=True, url_path='comments', url_name='comments')
     def comments(self, request, pk=None) -> JsonResponse:
         post = Post.objects.filter(id=pk).first()
-
         return JsonResponse(
             CommentSerializer(
                 post.get_comments(),
@@ -127,11 +143,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class SubjectViewSet(viewsets.ModelViewSet):
-    """ViewSet class for the Subjects
+    """
+    ViewSet class for the Subjects
 
     Custom function to filter all the subjects from the desired domain.
     To get all the subjects from the domain e.g. with id=1, use URL like below:
-    /subjects/1/by-domain/"""
+    /subjects/1/by-domain/
+    """
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 

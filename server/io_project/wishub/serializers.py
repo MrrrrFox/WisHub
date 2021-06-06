@@ -21,7 +21,9 @@ class DynamicFieldsModelSerializer(ModelSerializer):
                 self.fields.pop(field_name)
 
 
+
 class PostSerializer(ModelSerializer):
+    author = UserSerializer()
     class Meta:
         model = Post
         fields = ('id', 'author', 'link', 'description', 'subject', 'level',
