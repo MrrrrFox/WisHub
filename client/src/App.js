@@ -4,7 +4,7 @@ import './App.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-import {Posts, UserPage} from './pages' // Post
+import {Posts, UserPage, HomePage} from './pages' // Post
 import axios from "./axios.config";
 
 
@@ -34,11 +34,11 @@ const App = () => {
     if(isLogged != null){
       getUser()
     }
-
   }, [isLogged])
   return (
     <BrowserRouter>
       <Switch>
+        <Route exact path={"/"} component={HomePage}/>
         <Route exact path="/signin" component={Login}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/post-add" render={(props) =>(
@@ -49,9 +49,8 @@ const App = () => {
         )}/>
         <Route path="/posts/:id" component={Posts}/>
         <Route path="/user/:id" render={(props) => (
-          <UserPage {...props} user={user}/>
+          <UserPage {...props} user={user} getUser={getUser}/>
         )} />
-        {/*<Route path={"/post/:id"} component={Post}/>*/}
       </Switch>
       <CssBaseline />
       <div className="App">
