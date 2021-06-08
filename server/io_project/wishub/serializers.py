@@ -23,10 +23,19 @@ class DynamicFieldsModelSerializer(ModelSerializer):
 
 class PostSerializer(ModelSerializer):
     author = UserSerializer()
+
     class Meta:
         model = Post
         fields = ('id', 'author', 'link', 'description', 'subject', 'level',
-                'num_upvoted', 'num_downvoted', 'created', 'num_comments')
+                  'num_upvoted', 'num_downvoted', 'created', 'num_comments')
+
+
+class CreatePostSerializer(ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ('id', 'author', 'link', 'description', 'subject', 'level',
+                  'num_upvoted', 'num_downvoted', 'created', 'num_comments')
 
 
 class SubjectSerializer(ModelSerializer):

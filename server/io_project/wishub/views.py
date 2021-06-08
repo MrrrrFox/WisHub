@@ -2,7 +2,7 @@ from users.models import CustomUser
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import Post, Subject, Domain, Comment, UserVotes
-from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer
+from .serializers import CommentSerializer, PostSerializer, CreatePostSerializer, SubjectSerializer, DomainSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -23,13 +23,18 @@ class PostViewSet(viewsets.ModelViewSet):
 
     # model = Post
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    #serializer_class = PostSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CreatePostSerializer
+        return PostSerializer
 
     @action(methods=['get'], detail=True, url_path='by-subject',
             url_name='by_subject')
     def get_by_subject_id(self, request, pk=None):
         queryset = Post.objects.filter(subject=pk)
-        serializer = PostSerializer(queryset, many=True)
+        serializer = GetPostSerializer(queryset, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     @action(methods=['get'], detail=True, url_path='by-author',
