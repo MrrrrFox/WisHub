@@ -26,7 +26,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     # model = Post
     queryset = Post.objects.all()
-    # serializer_class = PostSerializer
+    serializer_class = PostSerializer
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

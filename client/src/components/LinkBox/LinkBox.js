@@ -6,10 +6,9 @@ import Card from '@material-ui/core/Card';
 import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import axios from "../../axios.config";
 
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,29 +45,24 @@ const useStyles = makeStyles((theme) => ({
 const LinkBox = (props) => {
   let { id, description, link, author, numDownvoted, numUpvoted ,level, created } = props.post;
   let user = props.user;
+  let votes = props.votes;
   const [upCount, setUpCount] = useState(numUpvoted);
+  const [downCount, setDownCount] = useState(numDownvoted);
   const [colorVote, setColorVote] = useState('black');
   const idx = created.indexOf('T');
   var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
 
-  const incrementCount = () => {
-    /*colorVote === 'green' ? setUpCount(upCount - 1) : setUpCount(upCount + 1);
-    if(colorVote === 'red')
-      setDownCount(downCount - 1);
-    colorVote === 'green' ? setColorVote('black') : setColorVote('green');
-    //style={{ color: colorVote === 'red' ? 'black' : colorVote }}*/
-    if(user !== null){
-      const vote = {
+  const votePost = (val) => {
+    const vote = {
       "user_id" : user["pk"],
-      "vote_type": "up"
+      "vote_type": val
     }
 
     axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
       .then(res => {
         if(res.status === 200){
-
-          setUpCount(upCount + 1);
-          setColorVote('green');
+          val === 'up' ? setUpCount(upCount + 1) : setDownCount(downCount + 1);
+          val === 'up' ? votes[id] = 'up' : votes[id] = 'down';
         }
       })
       .catch((error) => {
@@ -76,41 +70,108 @@ const LinkBox = (props) => {
           console.log(error.response.data); // => the response payload
           }
       });
-    }
-
   };
 
-  const [downCount, setDownCount] = useState(numDownvoted);
-  const decrementCount = () => {
-    /*setDownCount(downCount - 1);
-    colorVote === 'red' ? setDownCount(downCount - 1) : setDownCount(downCount + 1);
-    if(colorVote === 'green')
-      setUpCount(upCount - 1);
-    colorVote === 'red' ? setColorVote('black') : setColorVote('red');*/
-    if(user!==null){
+  const incrementCount = () => {
+    if(user !== null){
       const vote = {
-      "user_id" : user["pk"],
-      "vote_type": "down"
+      "user_id" : user["pk"]
     }
 
-    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
+    axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
       .then(res => {
         if(res.status === 200){
-
-          setDownCount(downCount + 1);
-          setColorVote('red');
+            var voteVal = res.data;
+            if(voteVal['voteType']) {
+              const unvote = {
+                "user_id" : user["pk"]
+              }
+          
+              axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
+                .then(res => {
+                  if(res.status === 200){
+                    if(voteVal['voteType'] === 'up') {
+                      setUpCount(upCount - 1);
+                      votes[id] = 'none';
+                    }
+                    else {
+                      setDownCount(downCount - 1);
+                      votePost('up');
+                    }
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data);
+                    }
+                });
+            }
+            if(voteVal['errorMessage']) {
+              votePost('up');
+            }
         }
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data); // => the response payload
+          console.log(error.response.data);
           }
       });
+    
+    }
+  };
+
+  const decrementCount = () => {
+    if(user !== null){
+      const vote = {
+      "user_id" : user["pk"]
     }
 
+    axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
+      .then(res => {
+        if(res.status === 200){
+            var voteVal = res.data;
+            if(voteVal['voteType']) {
+              const unvote = {
+                "user_id" : user["pk"]
+              }
+          
+              axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
+                .then(res => {
+                  if(res.status === 200){
+                    if(voteVal['voteType'] === 'down') {
+                      setDownCount(downCount - 1);
+                      votes[id] = 'none';
+                    }
+                    else {
+                      setUpCount(upCount - 1);
+                      votePost('down');
+                    }
+                  }
+                })
+                .catch((error) => {
+                  if( error.response ){
+                    console.log(error.response.data);
+                    }
+                });
+            }
+            if(voteVal['errorMessage']) {
+              votePost('down');
+            }
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data);
+          }
+      });
+    
+    }
   };
 
   const classes = useStyles();
+  useEffect(() => {
+    votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
+  });
 
   return (
     <div className={classes.root}>
