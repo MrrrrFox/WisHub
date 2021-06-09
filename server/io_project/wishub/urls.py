@@ -15,6 +15,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
-    path('contact-admin', views.MessageAdmin.as_view()),
+    path('contact-admin/', views.MessageAdmin.as_view()),
     path('user-voted-posts', views.UserVoted.as_view()),
 ]
