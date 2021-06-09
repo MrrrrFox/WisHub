@@ -32,7 +32,7 @@ const EditData = ({user, getUser}) => {
   }
   const handleEditPassword = (data) => {
     const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
-    console.log(data)
+
     axios.post('v1/users/auth/password/change/', data, config)
       .then(res => {
         if (res.status === 200) {

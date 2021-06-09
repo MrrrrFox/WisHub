@@ -72,8 +72,7 @@ const PostAdder = ({user}) => {
 
   const handlePostAdder = (post) => {
 
-
-    post['author'] = {username: user.username, email: user.email}
+    post['author'] = user.pk
 
     axios.post('v1/wishub/posts/', post)
       .then(res => {

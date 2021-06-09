@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {Button, ButtonBase} from "@material-ui/core";
 import {UserData, UserPosts, MessageAdmin, EditData} from './components'
@@ -38,15 +38,30 @@ const useStyles = makeStyles((theme) => ({
   },
   marg: {
     marginBottom: '80px'
-  }
+  },
+  input: {
+    display: 'none',
+  },
 }));
 
 
 const UserPage = ({user, getUser}) => {
-  console.log(user)
+  const [userImage, setUserImage] = useState(null)
   let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
+
+  const uploadProfileImage = (event) => {
+
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = () => {
+      setUserImage(reader.result)
+    }
+
+  }
 
   return (
     <>
@@ -65,17 +80,17 @@ const UserPage = ({user, getUser}) => {
             justify="center"
             alignContent="center"
             alignItems={"center"}
-
+            spacing={1}
           >
             <Grid item>
               <ButtonBase className={classes.image}>
-                <img className={classes.img} alt="complex" src={blank}/>
+                <img className={classes.img} alt="complex" src={userImage || blank}/>
               </ButtonBase>
             </Grid>
             <Grid item>
               <UserData user={user}/>
             </Grid>
-            <Grid item >
+            <Grid item>
               <Button
                 variant="contained"
                 color={"secondary"}
@@ -102,6 +117,26 @@ const UserPage = ({user, getUser}) => {
                 Message to admin
               </Button>
             </Grid>
+            <Grid item>
+              <input
+                accept="image/*"
+                className={classes.input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={uploadProfileImage}
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  variant="contained"
+                  component="span"
+                  color={"secondary"}
+                >
+                  Upload image
+                </Button>
+              </label>
+
+            </Grid>
           </Grid>
           <Grid
             container
@@ -110,20 +145,20 @@ const UserPage = ({user, getUser}) => {
             justify="space-around"
             alignItems={"center"}
           >
-              <Switch>
-                <Route exact path={`${path}`}>
-                  <UserPosts userId={user.pk}/>
-                </Route>
-                <Route exact path={`${path}/message`}>
-                  <MessageAdmin/>
-                </Route>
-                <Route exact path={`${path}/user-posts/`}>
-                  <UserPosts userId={user.pk}/>
-                </Route>
-                <Route exact path={`${path}/edit`}>
-                  <EditData user={user} getUser={getUser}/>
-                </Route>
-              </Switch>
+            <Switch>
+              <Route exact path={`${path}`}>
+                <UserPosts userId={user.pk}/>
+              </Route>
+              <Route exact path={`${path}/message`}>
+                <MessageAdmin/>
+              </Route>
+              <Route exact path={`${path}/user-posts/`}>
+                <UserPosts userId={user.pk}/>
+              </Route>
+              <Route exact path={`${path}/edit`}>
+                <EditData user={user} getUser={getUser}/>
+              </Route>
+            </Switch>
 
           </Grid>
         </Grid>
