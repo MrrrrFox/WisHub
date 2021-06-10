@@ -80,7 +80,7 @@ const LinkBox = (props) => {
           <NavigationIcon className={classes.transformation} />
           {downCount}
         </Button>
-        <IconButton onClick={() => window.open('v1/wishub/posts/${id}/comments')}>
+        <IconButton onClick={() => window.open('v1/wishub/posts/${post.id}/comments')}>
           <AddComment/>
         </IconButton>
         {/*<Button>*/}

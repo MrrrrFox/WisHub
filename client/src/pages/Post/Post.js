@@ -32,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Post = () => {
   const classes = useStyles();
-  const [post, setPost] = useState(null)
+  const [comment, post, setPost, setComment] = useState(null)
   const { id } = useParams();
   let comments
 
   const fetchPost = () => {
-    axios.get(`v1/wishub/posts/${id}/`)
+    axios.get(`v1/wishub/posts/${post.id}/comments`)
       .then(res => {
         if(res.status === 200){
           console.log(res.data)
@@ -56,8 +56,8 @@ const Post = () => {
   }, [id]);
 
   const onSort = (e) => {
-    setPost(e);
-    console.log(post);
+    setComment(e);
+    console.log(comment);
   };
 
   return (
@@ -72,7 +72,7 @@ const Post = () => {
       justify="flex-start"
       direction="column"
       >
-        <Sort posts={post} onSort={onSort}/>
+        <Sort comments={comment} onSort={onSort}/>
     </Grid>
       <Grid
         container

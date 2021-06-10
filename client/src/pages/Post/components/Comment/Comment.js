@@ -8,7 +8,21 @@ import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import axios from "../../axios.config";
+import Box from "@material-ui/core/Box";
 
+
+const Copyright = () => {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://material-ui.com/">
+        WisHub
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,7 +58,7 @@ const Comment = ({user}) => {
   const handleComment = (comment) => {
     console.log(comment)
     comment['author'] = user.pk
-    axios.post('v1/wishub/posts/${id}/comments', comment)
+    axios.post('v1/wishub/posts/${post.id}/comments', comment)
       .then(res => {
         if(res.status === 201){
           history.push(`/comments/${comment.id}`)
@@ -62,20 +76,10 @@ const Comment = ({user}) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          Comments
+          New Comment
         </Typography>
         <FormProvider { ...handleSubmit }>
         <form onSubmit = {handleSubmit(handleComment)} className={classes.form}>
-
-          <Controller
-            render = {({field}) => (
-                <TextField {...field} fullWidth label="Title" required onChange={(e) => field.onChange(e)}
-                           value={field.value} inputProps={{ maxLength: 100 }}/>
-            )}
-            name="title"
-            control={control}
-            defaultValue=""
-          />
 
           <Controller
             render = {({field}) => (
@@ -93,6 +97,9 @@ const Comment = ({user}) => {
         </form>
         </FormProvider>
       </div>
+      <Box mt={8}>
+        <Copyright />
+      </Box>
     </Container>
   );
 }
