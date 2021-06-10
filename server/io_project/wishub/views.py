@@ -5,8 +5,10 @@ from .models import Post, Subject, Domain, Comment, UserVotes
 from .serializers import CommentSerializer, PostSerializer, SubjectSerializer, DomainSerializer, CreatePostSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework import viewsets, status
+from rest_framework.decorators import action, permission_classes
+from rest_framework import viewsets, status, permissions
+from rest_framework.views import APIView
+from django.core.mail import mail_admins
 
 from .utils import VoteType
 
@@ -24,7 +26,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     # model = Post
     queryset = Post.objects.all()
-    # serializer_class = PostSerializer
+    serializer_class = PostSerializer
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -253,3 +255,43 @@ def post_detail(request, year, month, day, post):
             'post': post
         }
     )
+
+
+class MessageAdmin(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        print(request.user)
+        print(request.user.id)
+        return Response({"elo":"mordo"}, status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+
+        # mail_admins(
+        #     subject="User message",
+        #     message=request.get("message")
+        # )
+        print(request.get("message"))
+
+        return Response(
+            {
+                "message": "Message sent"
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class UserVoted(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        """
+        Returns information about all posts voted by the user.
+        Gives information about type of votes.
+        pk in the route is a user id
+        """
+
+        post_dict = {_.post.id: _.vote_type
+                     for _ in UserVotes.objects.filter(user=request.user.id)}
+        return JsonResponse(post_dict, safe=False)
