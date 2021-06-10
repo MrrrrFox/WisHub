@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 import axios from "../../axios.config";
-import { Grid, makeStyles } from '@material-ui/core';
-import { LinkBox, Sort } from '../../components';
+import {Grid, makeStyles} from '@material-ui/core';
+import {LinkBox, Sort} from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -24,38 +24,39 @@ const useStyles = makeStyles((theme) => ({
 const Posts = ({user}) => {
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
-  const [orgPosts, setOrgPosts] = useState({});
-  const [votes, setVotes] = useState(null)
-  const { id } = useParams();
+  const [orgPosts, setOrgPosts] = useState(null);
+  const [votes, setVotes] = useState({})
+  const {id} = useParams();
 
   const fetchPosts = () => {
     axios.get(`v1/wishub/posts/${id}/by-subject`)
       .then(res => {
-        if(res.status === 200){
+        if (res.status === 200) {
 
           setPosts(res.data)
           setOrgPosts(res.data);
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data);
-          }
+        }
       });
   }
-  
+
   const fetchVotes = () => {
     const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
     axios.get(`v1/wishub/user-voted-posts`, config)
       .then(res => {
-        if(res.status === 200){
+        if (res.status === 200) {
           setVotes(res.data);
+          //console.log(res.data);
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data);
-          }
+        }
       });
   }
 
@@ -66,36 +67,37 @@ const Posts = ({user}) => {
 
   const onSort = (e) => {
     setPosts([...e]);
+
   };
 
   return (
     <Grid
-    container
-    justify="flex-start"
-    direction="row"
-    className={classes.main}
-    >
-    <Grid
       container
       justify="flex-start"
-      direction="column"
-      >
-        <Sort posts={orgPosts} onSort={onSort}/>
-    </Grid>
+      direction="row"
+      className={classes.main}
+    >
       <Grid
         container
         justify="flex-start"
         direction="column"
+      >
+        <Sort posts={orgPosts} onSort={onSort}/>
+      </Grid>
+      <Grid
+        container
+        direction="column"
         id="postsList"
+        alignContent={"center"}
+        spacing={2}
       >
         {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} votes={votes} />) : null
-          }
+          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} votes={votes}/>) : null
+        }
       </Grid>
     </Grid>
   );
 };
-
 
 
 export default Posts;

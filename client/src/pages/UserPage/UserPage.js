@@ -77,8 +77,9 @@ const UserPage = ({user, getUser}) => {
             container
             item xs={3}
             direction="column"
-            justify="center"
-            alignContent="center"
+            // justify="center"
+            justify={"flex-start"}
+            // alignContent="center"
             alignItems={"center"}
             spacing={1}
           >
@@ -147,13 +148,13 @@ const UserPage = ({user, getUser}) => {
           >
             <Switch>
               <Route exact path={`${path}`}>
-                <UserPosts userId={user.pk}/>
+                <UserPosts user={user}/>
               </Route>
               <Route exact path={`${path}/message`}>
                 <MessageAdmin/>
               </Route>
               <Route exact path={`${path}/user-posts/`}>
-                <UserPosts userId={user.pk}/>
+                <UserPosts user={user}/>
               </Route>
               <Route exact path={`${path}/edit`}>
                 <EditData user={user} getUser={getUser}/>
