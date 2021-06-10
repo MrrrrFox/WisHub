@@ -1,16 +1,8 @@
-import React, { useState, useEffect} from 'react';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import React from 'react';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { useHistory } from 'react-router-dom';
-import { useForm, Controller, FormProvider } from "react-hook-form";
-import axios from "../../axios.config";
 import {Divider, List, ListItem, ListItemText} from "@material-ui/core";
 
 
@@ -50,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 const Comment = ({ comments }) => {
   const classes = useStyles();
   return (
-    <List className={classes.root}>
+    <List className={classes.main}>
       {comments.map(comment => {
         console.log("Comment", comment);
         return (
@@ -62,18 +54,18 @@ const Comment = ({ comments }) => {
               <ListItemText
                 primary={
                   <Typography className={classes.fonts}>
-                    {comment.name}
+                    {comment.post}
                   </Typography>
                 }
                 secondary={
                   <>
                     <Typography
                       component="span"
-                      variant="body2"
+                      variant="body"
                       className={classes.inline}
                       color="textPrimary"
                     >
-                      {comment.email}
+                      {comment.author}
                     </Typography>
                     {` - ${comment.body}`}
                   </>

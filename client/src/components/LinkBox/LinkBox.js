@@ -145,7 +145,7 @@ const LinkBox = (props) => {
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
         {/*</Button>*/}
-        <IconButton onClick={() => window.open('v1/wishub/posts/${post.id}/comments')}>
+        <IconButton onClick={() => window.open('${post.id}/comments')}>
           <AddComment/>
         </IconButton>
         <Typography className={classes.username} variant="h6">
