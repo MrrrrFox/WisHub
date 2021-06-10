@@ -4,7 +4,6 @@ import Carousel from 'react-material-ui-carousel'
 import {LinkBox} from '../../components'
 import axios from "../../axios.config";
 
-
 const useStyles = makeStyles((theme) => ({
   main: {
     width: `${theme.feedWidth}px`,
@@ -18,6 +17,7 @@ const HomePage = () => {
 
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
+  const [votes, setVotes] = useState({})
 
   const fetchPosts = () => {
     axios.get(`v1/wishub/posts/`)
@@ -33,8 +33,24 @@ const HomePage = () => {
       });
   }
 
+  const fetchVotes = () => {
+    const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
+    axios.get(`v1/wishub/user-voted-posts`, config)
+      .then(res => {
+        if (res.status === 200) {
+          setVotes(res.data);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.data);
+        }
+      });
+  }
+
   useEffect(() => {
     fetchPosts();
+    fetchVotes()
   }, []);
 
   return (
@@ -42,13 +58,15 @@ const HomePage = () => {
       container
       direction="column"
       justify="space-around"
-      alignItems={"center"}
+      alignContent={"center"}
       className={classes.main}
     >
-      <Grid item xs={8}>
-        <Carousel>
+      <Grid item xs={12}>
+        <Carousel
+          fullHeightHover={false}
+        >
           {
-            posts ? posts.map((post) => <LinkBox key={post.id} post={post}/>) : null
+            posts ? posts.map((post) => <LinkBox key={post.id} post={post} votes={votes}/>) : null
           }
         </Carousel>
       </Grid>
