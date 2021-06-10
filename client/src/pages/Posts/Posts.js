@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const Posts = ({user}) => {
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
-  const [orgPosts, setOrgPosts] = useState(null);
+  const [orgPosts, setOrgPosts] = useState({});
   const [votes, setVotes] = useState(null)
   const { id } = useParams();
 
@@ -50,7 +50,6 @@ const Posts = ({user}) => {
       .then(res => {
         if(res.status === 200){
           setVotes(res.data);
-          //console.log(res.data);
         }
       })
       .catch((error) => {
@@ -67,7 +66,6 @@ const Posts = ({user}) => {
 
   const onSort = (e) => {
     setPosts([...e]);
-
   };
 
   return (

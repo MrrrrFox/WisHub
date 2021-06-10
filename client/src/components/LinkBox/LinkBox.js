@@ -1,14 +1,14 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
+import {Button} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import axios from "../../axios.config";
 
-const { useState, useEffect } = React;
+const {useState, useEffect} = React;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,135 +43,134 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { id, description, link, author, numDownvoted, numUpvoted ,level, created } = props.post;
+
+  let {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
   let user = props.user;
   let votes = props.votes;
   const [upCount, setUpCount] = useState(numUpvoted);
   const [downCount, setDownCount] = useState(numDownvoted);
   const [colorVote, setColorVote] = useState('black');
   const idx = created.indexOf('T');
-  var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
+  const date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
 
   const votePost = (val) => {
     const vote = {
-      "user_id" : user["pk"],
+      "user_id": user["pk"],
       "vote_type": val
     }
 
     axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
       .then(res => {
-        if(res.status === 200){
+        if (res.status === 200) {
           val === 'up' ? setUpCount(upCount + 1) : setDownCount(downCount + 1);
           val === 'up' ? votes[id] = 'up' : votes[id] = 'down';
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data); // => the response payload
-          }
+        }
       });
   };
 
   const incrementCount = () => {
-    if(user !== null){
+    if (user !== null) {
       const vote = {
-      "user_id" : user["pk"]
-    }
+        "user_id": user["pk"]
+      }
 
-    axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
-      .then(res => {
-        if(res.status === 200){
-            var voteVal = res.data;
-            if(voteVal['voteType']) {
+      axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            const voteVal = res.data;
+            if (voteVal['voteType']) {
               const unvote = {
-                "user_id" : user["pk"]
+                "user_id": user["pk"]
               }
-          
+
               axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
                 .then(res => {
-                  if(res.status === 200){
-                    if(voteVal['voteType'] === 'up') {
+                  if (res.status === 200) {
+                    if (voteVal['voteType'] === 'up') {
                       setUpCount(upCount - 1);
                       votes[id] = 'none';
-                    }
-                    else {
+                    } else {
                       setDownCount(downCount - 1);
                       votePost('up');
                     }
                   }
                 })
                 .catch((error) => {
-                  if( error.response ){
+                  if (error.response) {
                     console.log(error.response.data);
-                    }
+                  }
                 });
             }
-            if(voteVal['errorMessage']) {
+            if (voteVal['errorMessage']) {
               votePost('up');
             }
-        }
-      })
-      .catch((error) => {
-        if( error.response ){
-          console.log(error.response.data);
           }
-      });
-    
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
+
     }
   };
 
   const decrementCount = () => {
-    if(user !== null){
+    if (user !== null) {
       const vote = {
-      "user_id" : user["pk"]
-    }
+        "user_id": user["pk"]
+      }
 
-    axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
-      .then(res => {
-        if(res.status === 200){
-            var voteVal = res.data;
-            if(voteVal['voteType']) {
+      axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            const voteVal = res.data;
+            if (voteVal['voteType']) {
               const unvote = {
-                "user_id" : user["pk"]
+                "user_id": user["pk"]
               }
-          
+
               axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
                 .then(res => {
-                  if(res.status === 200){
-                    if(voteVal['voteType'] === 'down') {
+                  if (res.status === 200) {
+                    if (voteVal['voteType'] === 'down') {
                       setDownCount(downCount - 1);
                       votes[id] = 'none';
-                    }
-                    else {
+                    } else {
                       setUpCount(upCount - 1);
                       votePost('down');
                     }
                   }
                 })
                 .catch((error) => {
-                  if( error.response ){
+                  if (error.response) {
                     console.log(error.response.data);
-                    }
+                  }
                 });
             }
-            if(voteVal['errorMessage']) {
+            if (voteVal['errorMessage']) {
               votePost('down');
             }
-        }
-      })
-      .catch((error) => {
-        if( error.response ){
-          console.log(error.response.data);
           }
-      });
-    
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
+
     }
   };
 
   const classes = useStyles();
   useEffect(() => {
     votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-  });
+  },);
 
   return (
     <div className={classes.root}>
@@ -195,10 +194,12 @@ const LinkBox = (props) => {
           </Typography>
         </CardContent>
         <Button onClick={incrementCount}>
-          <NavigationIcon className={classes.extendedIcon} style={{ color: colorVote === 'red' ? 'black' : colorVote }} />+{upCount}
+          <NavigationIcon className={classes.extendedIcon}
+                          style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
         </Button>
         <Button onClick={decrementCount}>
-          <NavigationIcon className={classes.transformation} style={{ color: colorVote === 'green' ? 'black' : colorVote }} />
+          <NavigationIcon className={classes.transformation}
+                          style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
           -{downCount}
         </Button>
         <Typography className={classes.username} variant="h6">
