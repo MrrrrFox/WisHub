@@ -1,13 +1,14 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
+import {Button, IconButton} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import axios from "../../axios.config";
+import {AddComment} from "@material-ui/icons";
 
 const { useState } = React;
 
@@ -144,6 +145,9 @@ const LinkBox = (props) => {
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
         {/*</Button>*/}
+        <IconButton onClick={() => window.open('v1/wishub/posts/${post.id}/comments')}>
+          <AddComment/>
+        </IconButton>
         <Typography className={classes.username} variant="h6">
           {author}
           <br/>
