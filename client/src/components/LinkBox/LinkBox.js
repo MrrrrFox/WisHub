@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Button, IconButton} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
@@ -9,8 +9,9 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import axios from "../../axios.config";
 import {AddComment} from "@material-ui/icons";
+import {useHistory} from 'react-router-dom'
 
-const { useState } = React;
+const {useState} = React;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LinkBox = (props) => {
-  let { id, description, link, author, numDownvoted, numUpvoted ,level, created } = props.post;
+  const history = useHistory()
+  let {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
   let user = props.user;
   const [upCount, setUpCount] = useState(numUpvoted);
   const [colorVote, setColorVote] = useState('black');
@@ -58,25 +60,25 @@ const LinkBox = (props) => {
       setDownCount(downCount - 1);
     colorVote === 'green' ? setColorVote('black') : setColorVote('green');
     //style={{ color: colorVote === 'red' ? 'black' : colorVote }}*/
-    if(user !== null){
+    if (user !== null) {
       const vote = {
-      "user_id" : user["pk"],
-      "vote_type": "up"
-    }
-    console.log(vote);
-    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
-      .then(res => {
-        if(res.status === 200){
-          console.log(res.data)
-          setUpCount(upCount + 1);
-          setColorVote('green');
-        }
-      })
-      .catch((error) => {
-        if( error.response ){
-          console.log(error.response.data); // => the response payload
+        "user_id": user["pk"],
+        "vote_type": "up"
+      }
+      console.log(vote);
+      axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data)
+            setUpCount(upCount + 1);
+            setColorVote('green');
           }
-      });
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data); // => the response payload
+          }
+        });
     }
 
   };
@@ -88,25 +90,25 @@ const LinkBox = (props) => {
     if(colorVote === 'green')
       setUpCount(upCount - 1);
     colorVote === 'red' ? setColorVote('black') : setColorVote('red');*/
-    if(user!==null){
+    if (user !== null) {
       const vote = {
-      "user_id" : user["pk"],
-      "vote_type": "down"
-    }
-    console.log(vote);
-    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
-      .then(res => {
-        if(res.status === 200){
-          console.log(res.data)
-          setDownCount(downCount + 1);
-          setColorVote('red');
-        }
-      })
-      .catch((error) => {
-        if( error.response ){
-          console.log(error.response.data); // => the response payload
+        "user_id": user["pk"],
+        "vote_type": "down"
+      }
+      console.log(vote);
+      axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data)
+            setDownCount(downCount + 1);
+            setColorVote('red');
           }
-      });
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data); // => the response payload
+          }
+        });
     }
 
   };
@@ -135,17 +137,21 @@ const LinkBox = (props) => {
           </Typography>
         </CardContent>
         <Button onClick={incrementCount}>
-          <NavigationIcon className={classes.extendedIcon} style={{ color: colorVote === 'red' ? 'black' : colorVote }} />+{upCount}
+          <NavigationIcon className={classes.extendedIcon}
+                          style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
         </Button>
         <Button onClick={decrementCount}>
-          <NavigationIcon className={classes.transformation} style={{ color: colorVote === 'green' ? 'black' : colorVote }} />
+          <NavigationIcon className={classes.transformation}
+                          style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
           -{downCount}
         </Button>
         {/*<Button>*/}
         {/*  <ChatBubbleOutlineIcon className={classes.extendedIcon} />*/}
         {/*  {comments.length}*/}
         {/*</Button>*/}
-        <IconButton onClick={() => window.open('${post.id}/comments')}>
+        {/*history.push(`/user/${user.pk}`)*/}
+        {/*window.open(`${id}/comments`*/}
+        <IconButton onClick={() => history.push(`/post/${id}`)}>
           <AddComment/>
         </IconButton>
         <Typography className={classes.username} variant="h6">
