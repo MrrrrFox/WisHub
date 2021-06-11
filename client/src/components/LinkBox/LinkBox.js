@@ -28,9 +28,9 @@ const useStyles = makeStyles(() => ({
 
 const LinkBox = (props) => {
 
-  let {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
-  let user = props.user;
-  let votes = props.votes;
+  const {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
+  const user = props.user || null;
+  const votes = props.votes;
   const [upCount, setUpCount] = useState(numUpvoted);
   const [downCount, setDownCount] = useState(numDownvoted);
   const [colorVote, setColorVote] = useState('black');
@@ -58,6 +58,7 @@ const LinkBox = (props) => {
   };
 
   const incrementCount = () => {
+
     if (user !== null) {
       const vote = {
         "user_id": user["pk"]

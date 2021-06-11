@@ -45,19 +45,22 @@ const Posts = ({user}) => {
   }
 
   const fetchVotes = () => {
-    const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
-    axios.get(`v1/wishub/user-voted-posts`, config)
-      .then(res => {
-        if (res.status === 200) {
-          setVotes(res.data);
-          //console.log(res.data);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      });
+    if (user != null) {
+      const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
+      axios.get(`v1/wishub/user-voted-posts`, config)
+        .then(res => {
+          if (res.status === 200) {
+            setVotes(res.data);
+            //console.log(res.data);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
+    }
+
   }
 
   useEffect(() => {

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const HomePage = () => {
+const HomePage = ({user}) => {
 
   const classes = useStyles();
   const [posts, setPosts] = useState(null)
@@ -33,19 +33,23 @@ const HomePage = () => {
       });
   }
 
-  const fetchVotes = () => {
-    const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
-    axios.get(`v1/wishub/user-voted-posts`, config)
-      .then(res => {
-        if (res.status === 200) {
-          setVotes(res.data);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-        }
-      });
+const fetchVotes = () => {
+    if (user != null) {
+      const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
+      axios.get(`v1/wishub/user-voted-posts`, config)
+        .then(res => {
+          if (res.status === 200) {
+            setVotes(res.data);
+            //console.log(res.data);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
+    }
+
   }
 
   useEffect(() => {
@@ -66,7 +70,7 @@ const HomePage = () => {
           fullHeightHover={false}
         >
           {
-            posts ? posts.map((post) => <LinkBox key={post.id} post={post} votes={votes}/>) : null
+            posts ? posts.map((post) => <LinkBox key={post.id} post={post} votes={votes} user={user}/>) : null
           }
         </Carousel>
       </Grid>
