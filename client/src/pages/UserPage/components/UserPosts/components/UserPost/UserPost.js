@@ -7,7 +7,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import axios from "../../../../../../axios.config";
 import {PostEditDialog} from './components'
 
-const UserPost = ({post, fetchUserPosts}) => {
+const UserPost = ({post, fetchUserPosts, votes,user}) => {
   const [open, setOpen] = React.useState(false);
   const deletePost = () => {
     axios.delete(`v1/wishub/posts/${post.id}`)
@@ -30,12 +30,12 @@ const UserPost = ({post, fetchUserPosts}) => {
       item
       container
       id="postsList"
-      justify="space-around"
       alignItems={"center"}
+      spacing={1}
     >
 
-      <Grid item xs={6}>
-        <LinkBox key={post.id} post={post}/>
+      <Grid item >
+        <LinkBox key={post.id} post={post} user={user} votes={votes}/>
       </Grid>
       <Grid item>
         <Button

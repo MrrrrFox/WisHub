@@ -1,152 +1,206 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
+import {Button, Grid} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import Fab from '@material-ui/core/Fab';
 import CardContent from '@material-ui/core/CardContent';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import LinkIcon from '@material-ui/icons/Link';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import {red} from '@material-ui/core/colors';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import axios from "../../axios.config";
+import blank from '../../assets/images/blank.png'
+const {useState, useEffect} = React;
 
-const { useState } = React;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-    position: 'relative',
+    minWidth: '20vw',
   },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
+  avatar: {
+    backgroundColor: red[500],
   },
-
-  transformation: {
-    marginRight: theme.spacing(1),
-    transform: 'rotate(180deg)',
-  },
-  link: {
-    color: theme.inherit,
-  },
-  username: {
-    position: 'absolute',
-    top: '20px',
-    right: '30px',
-    color: theme.palette.main,
-    maxWidth: '300px',
-    fontSize: '15px',
-    textAlign: "end"
-  },
-  level: {
-    fontSize: '15px'
-  }
 }));
 
 const LinkBox = (props) => {
-  let { id, description, link, author, numDownvoted, numUpvoted ,level, created } = props.post;
-  let user = props.user;
+
+  const {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
+  const user = props.user || null;
+  const votes = props.votes;
   const [upCount, setUpCount] = useState(numUpvoted);
+  const [downCount, setDownCount] = useState(numDownvoted);
   const [colorVote, setColorVote] = useState('black');
   const idx = created.indexOf('T');
-  var date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
+  const date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
 
-  const incrementCount = () => {
-    /*colorVote === 'green' ? setUpCount(upCount - 1) : setUpCount(upCount + 1);
-    if(colorVote === 'red')
-      setDownCount(downCount - 1);
-    colorVote === 'green' ? setColorVote('black') : setColorVote('green');
-    //style={{ color: colorVote === 'red' ? 'black' : colorVote }}*/
-    if(user !== null){
-      const vote = {
-      "user_id" : user["pk"],
-      "vote_type": "up"
+  const votePost = (val) => {
+    const vote = {
+      "user_id": user["pk"],
+      "vote_type": val
     }
 
     axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
       .then(res => {
-        if(res.status === 200){
-
-          setUpCount(upCount + 1);
-          setColorVote('green');
+        if (res.status === 200) {
+          val === 'up' ? setUpCount(upCount + 1) : setDownCount(downCount + 1);
+          val === 'up' ? votes[id] = 'up' : votes[id] = 'down';
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data); // => the response payload
-          }
+        }
       });
-    }
-
   };
 
-  const [downCount, setDownCount] = useState(numDownvoted);
-  const decrementCount = () => {
-    /*setDownCount(downCount - 1);
-    colorVote === 'red' ? setDownCount(downCount - 1) : setDownCount(downCount + 1);
-    if(colorVote === 'green')
-      setUpCount(upCount - 1);
-    colorVote === 'red' ? setColorVote('black') : setColorVote('red');*/
-    if(user!==null){
+  const incrementCount = () => {
+
+    if (user !== null) {
       const vote = {
-      "user_id" : user["pk"],
-      "vote_type": "down"
-    }
+        "user_id": user["pk"]
+      }
 
-    axios.post(`v1/wishub/posts/${id}/vote-post/`, vote)
-      .then(res => {
-        if(res.status === 200){
+      axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            const voteVal = res.data;
+            if (voteVal['voteType']) {
+              const unvote = {
+                "user_id": user["pk"]
+              }
 
-          setDownCount(downCount + 1);
-          setColorVote('red');
-        }
-      })
-      .catch((error) => {
-        if( error.response ){
-          console.log(error.response.data); // => the response payload
+              axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
+                .then(res => {
+                  if (res.status === 200) {
+                    if (voteVal['voteType'] === 'up') {
+                      setUpCount(upCount - 1);
+                      votes[id] = 'none';
+                    } else {
+                      setDownCount(downCount - 1);
+                      votePost('up');
+                    }
+                  }
+                })
+                .catch((error) => {
+                  if (error.response) {
+                    console.log(error.response.data);
+                  }
+                });
+            }
+            if (voteVal['errorMessage']) {
+              votePost('up');
+            }
           }
-      });
-    }
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
 
+    }
+  };
+
+  const decrementCount = () => {
+    if (user !== null) {
+      const vote = {
+        "user_id": user["pk"]
+      }
+
+      axios.post(`v1/wishub/posts/${id}/check-votes/`, vote)
+        .then(res => {
+          if (res.status === 200) {
+            const voteVal = res.data;
+            if (voteVal['voteType']) {
+              const unvote = {
+                "user_id": user["pk"]
+              }
+
+              axios.post(`v1/wishub/posts/${id}/unvote-post/`, unvote)
+                .then(res => {
+                  if (res.status === 200) {
+                    if (voteVal['voteType'] === 'down') {
+                      setDownCount(downCount - 1);
+                      votes[id] = 'none';
+                    } else {
+                      setUpCount(upCount - 1);
+                      votePost('down');
+                    }
+                  }
+                })
+                .catch((error) => {
+                  if (error.response) {
+                    console.log(error.response.data);
+                  }
+                });
+            }
+            if (voteVal['errorMessage']) {
+              votePost('down');
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+          }
+        });
+
+    }
   };
 
   const classes = useStyles();
 
+  useEffect(() => {
+    votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
+  }, [upCount, downCount, votes, id]);
+
+
   return (
-    <div className={classes.root}>
-      <Card>
+
+    <Grid item xs={8}>
+      <Card className={classes.root}>
+        <CardHeader
+          avatar={
+            //TODO alter with user profile image
+            <Avatar aria-label="recipe" className={classes.avatar} alt={`${author.username} profile image`} src={blank}/>
+
+            // </Avatar>
+          }
+          style={{textAlign: 'end'}}
+          title={author.username}
+          subheader={date}
+        />
         <CardContent>
-          <Typography className={classes.level}>
+          <Typography>
             Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
           </Typography>
-          <Typography gutterBottom variant="h5" component="h2">
-            <Fab
-              variant="extended"
-              target={'_blank'}
-              href={link}
-              className={classes.link}
-            >
-              {description}
-            </Fab>
-          </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {link}
+            {description}
+
           </Typography>
         </CardContent>
-        <Button onClick={incrementCount}>
-          <NavigationIcon className={classes.extendedIcon} style={{ color: colorVote === 'red' ? 'black' : colorVote }} />+{upCount}
-        </Button>
-        <Button onClick={decrementCount}>
-          <NavigationIcon className={classes.transformation} style={{ color: colorVote === 'green' ? 'black' : colorVote }} />
-          -{downCount}
-        </Button>
-        <Typography className={classes.username} variant="h6">
-          {author.username}
-          <br/>
-          {date}
-        </Typography>
+        <CardActions>
+
+          <IconButton aria-label="share" target={'_blank'} href={link}>
+            <LinkIcon/>
+          </IconButton>
+          <Button onClick={incrementCount}>
+            <ThumbUpIcon
+              style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
+          </Button>
+          <Button onClick={decrementCount}>
+            <ThumbDownIcon
+              style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
+            -{downCount}
+          </Button>
+        </CardActions>
       </Card>
-    </div>
+    </Grid>
+
   );
 };
 
