@@ -23,3 +23,4 @@ def get_admins_mails() -> List[str]:
             lambda x: x[0], 
             CustomUser.objects.filter(is_superuser=True).values_list("email"))
         )
+

@@ -17,4 +17,6 @@ urlpatterns = [
                               namespace='rest_framework')),
     path('contact-admin/', views.MessageAdmin.as_view()),
     path('user-voted-posts', views.UserVoted.as_view()),
+    path('users/avatar/', views.CurrentUserAvatar.as_view()),
+    path('users/<int:id>/avatar', views.UsersAvatars.as_view()),
 ]

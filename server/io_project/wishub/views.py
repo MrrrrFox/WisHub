@@ -1,4 +1,4 @@
-from users.models import CustomUser
+from users.models import CustomUser, UserProfile
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import Post, Subject, Domain, Comment, UserVotes
@@ -10,6 +10,8 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.views import APIView
 from django.core.mail import mail_admins, send_mail
 from .utils import VoteType, get_admins_mails
+from .custom_renderers import JPEGRenderer, PNGRenderer
+from wsgiref.util import FileWrapper
 import datetime
 
 
@@ -302,6 +304,52 @@ class MessageAdmin(APIView):
         )
 
 
+class UsersAvatars(APIView):
+    renderer_classes = [JPEGRenderer, PNGRenderer]
+
+    def get(self, request, *args, **kwargs):
+        
+        return Response(
+            FileWrapper(
+                UserProfile\
+                    .get_or_create(
+                        user=CustomUser.objects.get(
+                            id=kwargs.pop("id")
+                    ))\
+                    .avatar\
+                    .open()
+            )
+        )
+
+class CurrentUserAvatar(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [JPEGRenderer, PNGRenderer]
+
+    def get(self, request, *args, **kwargs):
+        
+
+        return Response(
+            FileWrapper(
+                UserProfile\
+                    .objects\
+                    .get(user=request.user)\
+                    .avatar\
+                    .open()
+            )
+        )
+
+    def post(self, request, *args, **kwargs):
+
+        UserProfile.create_or_update(
+            user=request.user,
+            avatar=request.FILES.get("avatar")
+        )
+
+        return JsonResponse( 
+            { "message": "Avatar set" },
+            status=status.HTTP_200_OK
+        )
 class UserVoted(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
