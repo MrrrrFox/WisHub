@@ -170,7 +170,8 @@ const LinkBox = (props) => {
 
   const classes = useStyles();
   useEffect(() => {
-    votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
+    if(votes)
+      votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
   });
 
   return (
