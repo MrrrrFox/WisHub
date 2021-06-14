@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import {Button, ButtonBase} from "@material-ui/core";
 import {UserData, UserPosts, MessageAdmin, EditData} from './components'
 import {makeStyles} from "@material-ui/core/styles";
-
+import blank from '../../assets/images/blank.png'
 import {
   Switch,
   useRouteMatch,
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const UserPage = ({user, getUser}) => {
-  const [userAvatar, setUserAvatar] = useState(null)
+  const [userAvatar, setUserAvatar] = useState(blank)
   let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
