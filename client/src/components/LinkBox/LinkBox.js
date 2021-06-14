@@ -17,7 +17,7 @@ import {AddComment} from "@material-ui/icons";
 import {useHistory} from 'react-router-dom'
 
 
-const LinkBox = ({user = null, post, votes = []}) => {
+const LinkBox = ({user = null, post, votes = {}, setVotes}) => {
 
   const {id, description, link, author, numDownvoted, numUpvoted, level, created} = post;
 
@@ -27,10 +27,10 @@ const LinkBox = ({user = null, post, votes = []}) => {
   const [colorVote, setColorVote] = useState('black');
   const idx = created.indexOf('T');
   const date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
-  const [authorAvatar, setAuthorAvatar] = useState(null)
+  const [authorAvatar, setAuthorAvatar] = useState(blank)
 
   const getAuthorAvatar = () => {
-    axios.get(`v1/wishub/users/${id}/avatar`)
+    axios.get(`v1/wishub/users/${author.id}/avatar`)
       .then(res => {
         if (res.status === 200) {
           setAuthorAvatar(`data:image/png;base64,${res.data.avatar}`);
@@ -55,6 +55,7 @@ const LinkBox = ({user = null, post, votes = []}) => {
         if (res.status === 200) {
           val === 'up' ? setUpCount(upCount + 1) : setDownCount(downCount + 1);
           val === 'up' ? votes[id] = 'up' : votes[id] = 'down';
+          setVotes(votes)
         }
       })
       .catch((error) => {
@@ -86,6 +87,7 @@ const LinkBox = ({user = null, post, votes = []}) => {
                     if (voteVal['voteType'] === 'up') {
                       setUpCount(upCount - 1);
                       votes[id] = 'none';
+                      setVotes(votes)
                     } else {
                       setDownCount(downCount - 1);
                       votePost('up');
@@ -133,6 +135,7 @@ const LinkBox = ({user = null, post, votes = []}) => {
                     if (voteVal['voteType'] === 'down') {
                       setDownCount(downCount - 1);
                       votes[id] = 'none';
+                      setVotes(votes)
                     } else {
                       setUpCount(upCount - 1);
                       votePost('down');
@@ -194,7 +197,7 @@ const LinkBox = ({user = null, post, votes = []}) => {
 
   useEffect(() => {
     votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-  },[votes, id] );
+  },);
 
   useEffect(() => {
     getAuthorAvatar()
@@ -202,8 +205,6 @@ const LinkBox = ({user = null, post, votes = []}) => {
 
 
   return (
-
-    // <Grid item>
     <>
       <Card>
         <CardHeader
@@ -271,9 +272,6 @@ const LinkBox = ({user = null, post, votes = []}) => {
         </FormControl>
       </Dialog>
     </>
-
-    // </Grid>
-
   );
 };
 

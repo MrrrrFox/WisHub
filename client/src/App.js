@@ -35,16 +35,16 @@ const App = () => {
         }
       });
   }
+
   useEffect(() => {
     if (isLogged != null) {
       getUser()
     }
   }, [isLogged])
+
   return (
     <BrowserRouter>
       <Suspense fallback={renderLoader()}>
-
-
         <Switch>
           <Route exact path={"/"} render={(props) => (
             <HomePage {...props} user={user}/>

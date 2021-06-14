@@ -35,7 +35,7 @@ const CollapseSection = ({ domainID, handleClick }) => {
 
   useEffect(() => {
     fetchSubjects();
-  }, []);
+  }, [domainID]);
   return (
     <Grid
       container

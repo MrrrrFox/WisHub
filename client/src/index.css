@@ -7,4 +7,6 @@ body {
 
 #root {
   padding-top: 200px;
+  width: 100vw;
+  height: 100vh;
 }

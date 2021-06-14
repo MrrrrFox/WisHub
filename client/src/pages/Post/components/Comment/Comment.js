@@ -20,7 +20,7 @@ const Comment = ({comment}) => {
           <Grid item>
             <Avatar aria-label="recipe" alt={`${author.username} profile image`} src={blank}/>
           </Grid>
-          <Grid item xs zeroMinWidth>
+          <Grid item xs>
             <h4 style={{margin: 0, textAlign: "left"}}>{author.username}</h4>
             <p style={{textAlign: "left"}}>
               {body}
