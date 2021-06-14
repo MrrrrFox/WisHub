@@ -70,6 +70,7 @@ MIDDLEWARE = [
 # This one here is for communication between frontend and backend
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
+    'https://wishub.herokuapp.com'
 ]
 
 ROOT_URLCONF = 'io_project.urls'
