@@ -17,7 +17,6 @@ import {AddComment} from "@material-ui/icons";
 import {useHistory} from 'react-router-dom'
 
 
-
 const LinkBox = ({user = null, post, votes = []}) => {
 
   const {id, description, link, author, numDownvoted, numUpvoted, level, created} = post;
@@ -28,6 +27,22 @@ const LinkBox = ({user = null, post, votes = []}) => {
   const [colorVote, setColorVote] = useState('black');
   const idx = created.indexOf('T');
   const date = created.substr(0, idx) + ", " + created.substr(idx + 1, 5);
+  const [authorAvatar, setAuthorAvatar] = useState(null)
+
+  const getAuthorAvatar = () => {
+    axios.get(`v1/wishub/users/${id}/avatar`)
+      .then(res => {
+        if (res.status === 200) {
+          setAuthorAvatar(`data:image/png;base64,${res.data.avatar}`);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data); // => the response payload
+        }
+      });
+  }
+
 
   const votePost = (val) => {
     const vote = {
@@ -179,7 +194,11 @@ const LinkBox = ({user = null, post, votes = []}) => {
 
   useEffect(() => {
     votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-  },);
+  },[votes, id] );
+
+  useEffect(() => {
+    getAuthorAvatar()
+  }, [])
 
 
   return (
@@ -190,9 +209,11 @@ const LinkBox = ({user = null, post, votes = []}) => {
         <CardHeader
           avatar={
             //TODO alter with user profile image
-            <Avatar aria-label="recipe" alt={`${author.username} profile image`}
-                    src={blank}/>
-
+            <Avatar
+              aria-label="recipe"
+              alt={`${author.username} profile image`}
+              src={authorAvatar
+              }/>
           }
           style={{textAlign: 'end'}}
           title={author.username}

@@ -13,7 +13,7 @@ from .utils import VoteType, get_admins_mails
 from .custom_renderers import JPEGRenderer, PNGRenderer
 from wsgiref.util import FileWrapper
 import datetime
-
+import base64
 
 # Create your views here.
 
@@ -306,14 +306,21 @@ class UsersAvatars(APIView):
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        return Response(
-            FileWrapper(
-                UserProfile.get_or_create(
-                    user=CustomUser.objects.get(
-                        id=kwargs.pop("id")
-                    )
-                ).avatar.open()
-            )
+        # return Response(
+        #     FileWrapper(
+        #         UserProfile.get_or_create(
+        #             user=CustomUser.objects.get(
+        #                 id=kwargs.pop("id")
+        #             )
+        #         ).avatar.open()
+        #     )
+        # )
+
+        with open(str(UserProfile.get_or_create(user=CustomUser.objects.get(id=kwargs.pop("id"))).avatar), "rb") as f:
+            image_data = base64.b64encode(f.read()).decode('utf-8')
+        return JsonResponse(
+            {"avatar": image_data},
+            status=status.HTTP_200_OK
         )
 
 
@@ -322,11 +329,18 @@ class CurrentUserAvatar(APIView):
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        return Response(
-            FileWrapper(
-                UserProfile.objects.get(user=request.user).avatar.open()
-            )
+        with open(str(UserProfile.objects.get(user=request.user).avatar), "rb") as f:
+            image_data = base64.b64encode(f.read()).decode('utf-8')
+
+        return JsonResponse(
+            {"avatar": image_data},
+            status=status.HTTP_200_OK
         )
+        # return Response(
+        #     FileWrapper(
+        #         UserProfile.objects.get(user=request.user).avatar.open()
+        #     )
+        # )
 
     def post(self, request, *args, **kwargs):
         UserProfile.create_or_update(

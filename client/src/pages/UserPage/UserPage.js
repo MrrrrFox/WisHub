@@ -1,15 +1,17 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {Button, ButtonBase} from "@material-ui/core";
 import {UserData, UserPosts, MessageAdmin, EditData} from './components'
 import {makeStyles} from "@material-ui/core/styles";
-import blank from '../../assets/images/blank.png'
+
 import {
   Switch,
   useRouteMatch,
   Route,
   useHistory
 } from "react-router-dom";
+import axios from "../../axios.config";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const UserPage = ({user, getUser}) => {
-  const [userImage, setUserImage] = useState(null)
+  const [userAvatar, setUserAvatar] = useState(null)
   let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
@@ -57,11 +59,56 @@ const UserPage = ({user, getUser}) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
+    const formData = new FormData();
+    formData.append('avatar', file);
+
     reader.onloadend = () => {
-      setUserImage(reader.result)
+      setUserAvatar(reader.result)
+
     }
 
+    const config = {
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('isLogged')}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+    axios.post(`v1/wishub/users/avatar/`, formData, config)
+      .then(res => {
+        if (res.status === 200) {
+
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data); // => the response payload
+        }
+      });
+
   }
+
+  const getUserAvatar = () => {
+    const config = {
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('isLogged')}`,
+      }
+    }
+    axios.get(`v1/wishub/users/avatar/`, config)
+      .then(res => {
+        if (res.status === 200) {
+          setUserAvatar(`data:image/png;base64,${res.data.avatar}`);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data); // => the response payload
+        }
+      });
+  }
+
+  useEffect(() => {
+    getUserAvatar()
+  }, [])
 
   return (
     <>
@@ -77,17 +124,20 @@ const UserPage = ({user, getUser}) => {
             container
             item xs={3}
             direction="column"
-            // justify="center"
             justify={"flex-start"}
-            // alignContent="center"
             alignItems={"center"}
             spacing={1}
           >
-            <Grid item>
-              <ButtonBase className={classes.image}>
-                <img className={classes.img} alt="complex" src={userImage || blank}/>
-              </ButtonBase>
-            </Grid>
+
+            {userAvatar ?
+
+              <Grid item>
+                <ButtonBase className={classes.image}>
+                  <img className={classes.img} alt="complex" src={userAvatar}/>
+                </ButtonBase>
+              </Grid> : null
+            }
+
             <Grid item>
               <UserData user={user}/>
             </Grid>
