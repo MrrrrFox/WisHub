@@ -61,7 +61,7 @@ const Post = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
         }
       });
   }
@@ -90,7 +90,7 @@ const Post = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           let err = document.getElementById("error");
           let message = error.response.data["body"];
           typeof message !== 'undefined' ? err.innerHTML = message : err.innerHTML = "Error";

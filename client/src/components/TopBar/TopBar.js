@@ -61,7 +61,7 @@ const TopBar = ({isLogged, user, setUser}) => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response);
+          console.error(error.response);
           }
       });
   }

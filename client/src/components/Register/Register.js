@@ -63,7 +63,7 @@ const Register = () => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           var err = document.getElementById("error");
 
           var username = error.response.data["username"];

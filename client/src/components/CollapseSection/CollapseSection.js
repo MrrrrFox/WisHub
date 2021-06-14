@@ -28,7 +28,7 @@ const CollapseSection = ({ domainID, handleClick }) => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data);
+          console.error(error.response.data);
           }
       });
   }

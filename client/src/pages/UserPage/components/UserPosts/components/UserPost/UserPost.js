@@ -18,7 +18,7 @@ const UserPost = ({post, fetchUserPosts, votes,user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
   }

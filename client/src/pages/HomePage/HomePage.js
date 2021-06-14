@@ -28,7 +28,7 @@ const HomePage = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
         }
       });
   }
@@ -44,7 +44,7 @@ const fetchVotes = () => {
         })
         .catch((error) => {
           if (error.response) {
-            console.log(error.response.data);
+            console.error(error.response.data);
           }
         });
     }
@@ -64,7 +64,7 @@ const fetchVotes = () => {
       alignContent={"center"}
       className={classes.main}
     >
-      <Grid item xs={12}>
+      <Grid item>
         <Carousel
           fullHeightHover={false}
         >

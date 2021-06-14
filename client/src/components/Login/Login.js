@@ -76,7 +76,7 @@ const SignIn = () => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data);
+          console.error(error.response.data);
           var err = document.getElementById("error");
           
           var email = error.response.data["email"];

@@ -56,7 +56,7 @@ const PostAdder = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
   }
@@ -78,7 +78,7 @@ const PostAdder = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           var err = document.getElementById("error");
 
           var message = error.response.data["link"];

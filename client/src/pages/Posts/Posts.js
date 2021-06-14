@@ -40,7 +40,7 @@ const Posts = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
   }
@@ -52,12 +52,11 @@ const Posts = ({user}) => {
         .then(res => {
           if (res.status === 200) {
             setVotes(res.data);
-            //console.log(res.data);
           }
         })
         .catch((error) => {
           if (error.response) {
-            console.log(error.response.data);
+            console.error(error.response.data);
           }
         });
     }

@@ -35,7 +35,7 @@ const Navbar = ({collapseDuration = '300ms'}) => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           }
       });
   }

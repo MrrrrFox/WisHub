@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Button, Grid, Dialog, DialogTitle, InputLabel, MenuItem, FormControl, Select} from '@material-ui/core';
-import {IconButton} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import LinkIcon from '@material-ui/icons/Link';
@@ -17,7 +16,6 @@ import blank from '../../assets/images/blank.png'
 import ReportIcon from '@material-ui/icons/Report';
 import {AddComment} from "@material-ui/icons";
 import {useHistory} from 'react-router-dom'
-// const  = React;
 
 
 
@@ -30,11 +28,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const LinkBox = (props) => {
+const LinkBox = ({user=null, post, votes = []}) => {
 
-  const {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
-  const user = props.user || null;
-  const votes = props.votes;
+  const {id, description, link, author, numDownvoted, numUpvoted, level, created} = post;
+
   const history = useHistory()
   const [upCount, setUpCount] = useState(numUpvoted);
   const [downCount, setDownCount] = useState(numDownvoted);
@@ -57,7 +54,7 @@ const LinkBox = (props) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
         }
       });
   };
@@ -92,7 +89,7 @@ const LinkBox = (props) => {
                 })
                 .catch((error) => {
                   if (error.response) {
-                    console.log(error.response.data);
+                    console.error(error.response.data);
                   }
                 });
             }
@@ -103,7 +100,7 @@ const LinkBox = (props) => {
         })
         .catch((error) => {
           if (error.response) {
-            console.log(error.response.data);
+            console.error(error.response.data);
           }
         });
 
@@ -139,7 +136,7 @@ const LinkBox = (props) => {
                 })
                 .catch((error) => {
                   if (error.response) {
-                    console.log(error.response.data);
+                    console.error(error.response.data);
                   }
                 });
             }
@@ -150,7 +147,7 @@ const LinkBox = (props) => {
         })
         .catch((error) => {
           if (error.response) {
-            console.log(error.response.data);
+            console.error(error.response.data);
           }
         });
 
@@ -179,12 +176,12 @@ const LinkBox = (props) => {
     axios.post(`v1/wishub/posts/${id}/report-post/`, data, config)
       .then(res => {
         if (res.status === 200) {
-          console.log('reported');
+          console.info('reported');
         }
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
       setOpen(false);
@@ -194,12 +191,12 @@ const classes = useStyles();
 
 useEffect(() => {
   votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-}, [upCount, downCount, votes, id]);
+}, );
 
 
 return (
 
-  <Grid item xs={8}>
+  <Grid item>
     <Card className={classes.root}>
       <CardHeader
         avatar={
@@ -223,9 +220,9 @@ return (
       </CardContent>
       <CardActions>
 
-        <IconButton aria-label="share" target={'_blank'} href={link}>
-          <LinkIcon/>
-        </IconButton>
+        <Button aria-label="share" target={'_blank'} href={link}>
+          <LinkIcon style={{color: 'blue'}}/>
+        </Button>
         <Button onClick={incrementCount}>
           <ThumbUpIcon
             style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
@@ -235,12 +232,15 @@ return (
             style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
           -{downCount}
         </Button>
-        <Button onClick={showDialog}>
-          <ReportIcon style={{marginLeft: '70px'}}/>
-        </Button>
-        <IconButton onClick={() => history.push(`/post/${id}`)}>
+
+        <Button onClick={() => history.push(`/post/${id}`)}>
           <AddComment/>
-        </IconButton>
+        </Button>
+        <Button onClick={showDialog}>
+          <ReportIcon
+            style={{color: 'red'}}
+          />
+        </Button>
       </CardActions>
     </Card>
     <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
