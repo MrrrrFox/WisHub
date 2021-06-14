@@ -10,15 +10,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     margin: '0 auto',
   },
-  loader: {
-    position: 'absolute',
-    left: '50%',
-    top: '40vh',
-    width: '100px',
-    height: '100px',
-
-    transform: 'translateX(-50%)',
-  },
 }));
 
 const Posts = ({user}) => {
@@ -66,7 +57,7 @@ const Posts = ({user}) => {
   useEffect(() => {
     fetchPosts();
     fetchVotes();
-  }, []);
+  }, [id]);
 
   const onSort = (e) => {
     setPosts([...e]);
@@ -76,15 +67,12 @@ const Posts = ({user}) => {
   return (
     <Grid
       container
-      justify="flex-start"
-      direction="row"
+      // justify="flex-start"
+      direction="column"
       className={classes.main}
+      // alignItems={"center"}
     >
-      <Grid
-        container
-        justify="flex-start"
-        direction="column"
-      >
+      <Grid item >
         <Sort posts={orgPosts} onSort={onSort}/>
       </Grid>
       <Grid
@@ -92,10 +80,14 @@ const Posts = ({user}) => {
         direction="column"
         id="postsList"
         alignContent={"center"}
-        spacing={2}
+        // spacing={2}
       >
         {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} votes={votes}/>) : null
+          ? posts.map((post) =>
+            <Grid item>
+              <LinkBox key={post.id} post={post} user={user} votes={votes}/>
+            </Grid>) :
+          null
         }
       </Grid>
     </Grid>

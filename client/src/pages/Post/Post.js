@@ -1,20 +1,10 @@
-// const {id} = useParams()
-// po tym id zrobic zapytanie o posta
-// get post -> dane: post -> link box
-// get comments
-//Layout
-//link box
-// add comment
-// comments -> GRid -> column -> kazdy comment to grid item w ktorym jest componnet "comment
-
 import React, {useState, useEffect} from 'react';
 import {useParams} from "react-router-dom";
 import axios from "../../axios.config";
-import {Grid, makeStyles, CircularProgress, Button} from '@material-ui/core';
-import {LinkBox, Sort} from '../../components';
+import {Grid, makeStyles, Button} from '@material-ui/core';
+import {LinkBox} from '../../components';
 import {Controller, FormProvider, useForm} from "react-hook-form";
 import TextField from "@material-ui/core/TextField";
-import {useHistory} from 'react-router-dom'
 import {Comment} from './components'
 
 const useStyles = makeStyles((theme) => ({
@@ -23,27 +13,18 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     margin: '0 auto',
   },
-  loader: {
-    position: 'absolute',
-    left: '50%',
-    top: '40vh',
-    width: '100px',
-    height: '100px',
-
-    transform: 'translateX(-50%)',
-  },
 }));
 
 
 const Post = ({user}) => {
-  const history = useHistory()
+
   const classes = useStyles();
   const [post, setPost] = useState(null)
   const [comments, setComments] = useState([])
-  const [comment, setComment] = useState(null)
+
   const {id} = useParams();
 
-  const {handleSubmit, control} = useForm();
+  const {handleSubmit, control, reset} = useForm();
 
 
   const fetchPost = () => {
@@ -70,9 +51,6 @@ const Post = ({user}) => {
     fetchPost();
   }, []);
 
-  // const onSort = (e) => {
-  //   setComment(e);
-  // };
 
   const handleCommentAdder = (comment) => {
 
@@ -80,6 +58,7 @@ const Post = ({user}) => {
     axios.post(`/v1/wishub/posts/${id}/comment/`, comment)
       .then(res => {
         if (res.status === 200) {
+          reset()
           return axios.get(`/v1/wishub/posts/${id}/comments`)
         }
       })
@@ -102,22 +81,13 @@ const Post = ({user}) => {
   return (
     <Grid
       container
-      justify="flex-start"
-      direction="row"
+      direction="column"
       className={classes.main}
+      alignItems={"center"}
     >
-      {/*<Grid*/}
-      {/*  container*/}
-      {/*  justify="flex-start"*/}
-      {/*  direction="column"*/}
-      {/*>*/}
-      {/*  <Sort comments={comment} onSort={onSort}/>*/}
-      {/*</Grid>*/}
       <Grid
-        container
-        justify="flex-start"
-        direction="column"
-        id="postsList"
+        item xs={8}
+        style={{marginTop: 20}}
       >
         {post
           ? <LinkBox key={post.id} post={post}/> : null
@@ -125,28 +95,17 @@ const Post = ({user}) => {
       </Grid>
       <Grid
         container
-        justify="flex-start"
         direction="column"
         id="commentsList"
+        alignContent={"center"}
       >
         {comments
-          ? comments.map((comment) => <Comment key={comment.id} comment={comment}/>) : null
+          ? comments.map((comment) => <Grid item><Comment key={comment.id} comment={comment}/> </Grid>) : null
         }
       </Grid>
-      <div className={classes.paper}>
+      <Grid item xs={6} style={{marginBottom: 20}}>
         <FormProvider {...handleSubmit}>
-          <form onSubmit={handleSubmit(handleCommentAdder)} className={classes.form}>
-            <Controller
-              render={({field}) => (
-                <TextField {...field} fullWidth label="Author" required onChange={(e) => field.onChange(e)}
-                           value={field.value}/>
-              )}
-              name="author"
-              control={control}
-              defaultValue=""
-              label="Author"
-            />
-
+          <form onSubmit={handleSubmit(handleCommentAdder)}>
             <Controller
               render={({field}) => (
                 <TextField {...field} fullWidth label="New Comment" required onChange={(e) => field.onChange(e)}
@@ -157,12 +116,12 @@ const Post = ({user}) => {
               defaultValue=""
             />
 
-            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-              Add
+            <Button type="submit" fullWidth variant="contained" color="primary" disabled={user == null}>
+              {user != null ? 'Add comment' : 'Login in'}
             </Button>
           </form>
         </FormProvider>
-      </div>
+      </Grid>
     </Grid>
   );
 };

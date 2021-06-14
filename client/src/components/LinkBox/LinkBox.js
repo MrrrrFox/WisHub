@@ -1,14 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+
 import Typography from '@material-ui/core/Typography';
-import {Button, Grid, Dialog, DialogTitle, InputLabel, MenuItem, FormControl, Select} from '@material-ui/core';
+import {Button, Dialog, DialogTitle, InputLabel, MenuItem, FormControl, Select} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import LinkIcon from '@material-ui/icons/Link';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
-import {red} from '@material-ui/core/colors';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import axios from "../../axios.config";
@@ -19,16 +18,7 @@ import {useHistory} from 'react-router-dom'
 
 
 
-const useStyles = makeStyles(() => ({
-  root: {
-    minWidth: '20vw',
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-}));
-
-const LinkBox = ({user=null, post, votes = []}) => {
+const LinkBox = ({user = null, post, votes = []}) => {
 
   const {id, description, link, author, numDownvoted, numUpvoted, level, created} = post;
 
@@ -184,85 +174,86 @@ const LinkBox = ({user=null, post, votes = []}) => {
           console.error(error.response.data);
         }
       });
-      setOpen(false);
-};
+    setOpen(false);
+  };
 
-const classes = useStyles();
-
-useEffect(() => {
-  votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-}, );
+  useEffect(() => {
+    votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
+  },);
 
 
-return (
+  return (
 
-  <Grid item>
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          //TODO alter with user profile image
-          <Avatar aria-label="recipe" className={classes.avatar} alt={`${author.username} profile image`} src={blank}/>
+    // <Grid item>
+    <>
+      <Card>
+        <CardHeader
+          avatar={
+            //TODO alter with user profile image
+            <Avatar aria-label="recipe" alt={`${author.username} profile image`}
+                    src={blank}/>
 
-          // </Avatar>
-        }
-        style={{textAlign: 'end'}}
-        title={author.username}
-        subheader={date}
-      />
-      <CardContent>
-        <Typography>
-          Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {description}
+          }
+          style={{textAlign: 'end'}}
+          title={author.username}
+          subheader={date}
+        />
+        <CardContent>
+          <Typography>
+            Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {description}
 
-        </Typography>
-      </CardContent>
-      <CardActions>
+          </Typography>
+        </CardContent>
+        <CardActions>
 
-        <Button aria-label="share" target={'_blank'} href={link}>
-          <LinkIcon style={{color: 'blue'}}/>
-        </Button>
-        <Button onClick={incrementCount}>
-          <ThumbUpIcon
-            style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
-        </Button>
-        <Button onClick={decrementCount}>
-          <ThumbDownIcon
-            style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
-          -{downCount}
-        </Button>
+          <Button aria-label="share" target={'_blank'} href={link}>
+            <LinkIcon style={{color: 'blue'}}/>
+          </Button>
+          <Button onClick={incrementCount}>
+            <ThumbUpIcon
+              style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
+          </Button>
+          <Button onClick={decrementCount}>
+            <ThumbDownIcon
+              style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
+            -{downCount}
+          </Button>
 
-        <Button onClick={() => history.push(`/post/${id}`)}>
-          <AddComment/>
-        </Button>
-        <Button onClick={showDialog}>
-          <ReportIcon
-            style={{color: 'red'}}
-          />
-        </Button>
-      </CardActions>
-    </Card>
-    <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Why you want to report this post?</DialogTitle>
-      <FormControl className={classes.select}>
-        <InputLabel>Why</InputLabel>
-        <Select onChange={whyReport}>
-          <MenuItem value="spam">Spam</MenuItem>
-          <MenuItem value="false">False info</MenuItem>
-          <MenuItem value="notValid">Link is not valid</MenuItem>
-        </Select>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={report}>
-          Report
-        </Button>
-      </FormControl>
-    </Dialog>
-  </Grid>
+          <Button onClick={() => history.push(`/post/${id}`)}>
+            <AddComment/>
+          </Button>
+          <Button onClick={showDialog}>
+            <ReportIcon
+              style={{color: 'red'}}
+            />
+          </Button>
+        </CardActions>
+      </Card>
+      <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">Why you want to report this post?</DialogTitle>
+        <FormControl>
+          <InputLabel>Why</InputLabel>
+          <Select onChange={whyReport}>
+            <MenuItem value="spam">Spam</MenuItem>
+            <MenuItem value="false">False info</MenuItem>
+            <MenuItem value="notValid">Link is not valid</MenuItem>
+          </Select>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={report}>
+            Report
+          </Button>
+        </FormControl>
+      </Dialog>
+    </>
 
-);
+    // </Grid>
+
+  );
 };
 
 export default LinkBox;

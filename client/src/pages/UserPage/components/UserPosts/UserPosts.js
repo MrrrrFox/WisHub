@@ -44,7 +44,7 @@ const UserPosts = ({user}) => {
     <Grid
       container
       id="postsList"
-      justify="space-around"
+      justify="flex-start"
       item xs={12}
       alignContent={"center"}
       direction={"column"}
