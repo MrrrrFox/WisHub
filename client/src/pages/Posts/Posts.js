@@ -29,6 +29,7 @@ const Posts = ({user}) => {
   const {id} = useParams();
 
   const fetchPosts = () => {
+    // const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
     axios.get(`v1/wishub/posts/${id}/by-subject`)
       .then(res => {
         if (res.status === 200) {
@@ -66,7 +67,7 @@ const Posts = ({user}) => {
   useEffect(() => {
     fetchPosts();
     fetchVotes();
-  }, [id]);
+  }, []);
 
   const onSort = (e) => {
     setPosts([...e]);

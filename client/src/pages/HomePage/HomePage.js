@@ -40,7 +40,6 @@ const fetchVotes = () => {
         .then(res => {
           if (res.status === 200) {
             setVotes(res.data);
-            //console.log(res.data);
           }
         })
         .catch((error) => {
