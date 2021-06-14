@@ -47,11 +47,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const UserPage = ({user, getUser}) => {
-  const [userAvatar, setUserAvatar] = useState(blank)
+const UserPage = ({user, getUser, userAvatar, setUserAvatar}) => {
+  // const [userAvatar, setUserAvatar] = useState(blank)
   let {path, url} = useRouteMatch();
   const history = useHistory()
   const classes = useStyles();
+
 
   const uploadProfileImage = (event) => {
 
@@ -87,28 +88,28 @@ const UserPage = ({user, getUser}) => {
 
   }
 
-  const getUserAvatar = () => {
-    const config = {
-      headers: {
-        'Authorization': `Token ${localStorage.getItem('isLogged')}`,
-      }
-    }
-    axios.get(`v1/wishub/users/avatar/`, config)
-      .then(res => {
-        if (res.status === 200) {
-          setUserAvatar(`data:image/png;base64,${res.data.avatar}`);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.error(error.response.data); // => the response payload
-        }
-      });
-  }
+  // const getUserAvatar = () => {
+  //   const config = {
+  //     headers: {
+  //       'Authorization': `Token ${localStorage.getItem('isLogged')}`,
+  //     }
+  //   }
+  //   axios.get(`v1/wishub/users/avatar/`, config)
+  //     .then(res => {
+  //       if (res.status === 200) {
+  //         setUserAvatar(`data:image/png;base64,${res.data.avatar}`);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       if (error.response) {
+  //         console.error(error.response.data); // => the response payload
+  //       }
+  //     });
+  // }
 
-  useEffect(() => {
-    getUserAvatar()
-  }, [])
+  // useEffect(() => {
+  //   getUserAvatar()
+  // }, [])
 
   return (
     <>
@@ -198,13 +199,13 @@ const UserPage = ({user, getUser}) => {
           >
             <Switch>
               <Route exact path={`${path}`}>
-                <UserPosts user={user}/>
+                <UserPosts user={user} rerender={userAvatar}/>
               </Route>
               <Route exact path={`${path}/message`}>
                 <MessageAdmin/>
               </Route>
               <Route exact path={`${path}/user-posts/`}>
-                <UserPosts user={user}/>
+                <UserPosts user={user} rerender={userAvatar}/>
               </Route>
               <Route exact path={`${path}/edit`}>
                 <EditData user={user} getUser={getUser}/>

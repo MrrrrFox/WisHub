@@ -3,7 +3,7 @@ import axios from "../../../../axios.config";
 import {UserPost} from './components'
 import {Grid} from "@material-ui/core";
 
-const UserPosts = ({user}) => {
+const UserPosts = ({user, rerender}) => {
   const [userPosts, setUserPosts] = useState(null)
   const [votes, setVotes] = useState({})
 
@@ -40,6 +40,12 @@ const UserPosts = ({user}) => {
     fetchUserPosts();
     fetchVotes();
   }, []);
+
+  useEffect(() => {
+    setUserPosts(null)
+    fetchUserPosts();
+  }, [rerender]);
+
   return (
     <Grid
       container

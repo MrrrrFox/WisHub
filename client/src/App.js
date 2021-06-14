@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
 
 import axios from "./axios.config";
+import blank from "./assets/images/blank.png";
 
 const Posts = lazy(() => import('./pages/Posts/'))
 const UserPage = lazy(() => import('./pages/UserPage/'))
@@ -17,6 +18,7 @@ const App = () => {
   const initUserLogged = localStorage.getItem('isLogged') || null;
   const [isLogged, setLogged] = useState(initUserLogged)
   const [user, setUser] = useState(null)
+  const [userAvatar, setUserAvatar] = useState(blank)
 
   window.addEventListener('storage', () => {
     setLogged(localStorage.getItem('isLogged'));
@@ -35,6 +37,36 @@ const App = () => {
         }
       });
   }
+
+
+  const getUserAvatar = () => {
+
+    const config = {
+      headers: {
+        'Authorization': `Token ${localStorage.getItem('isLogged')}`,
+      }
+    }
+    if (user != null) {
+      axios.get(`v1/wishub/users/avatar/`, config)
+        .then(res => {
+          if (res.status === 200) {
+            setUserAvatar(`data:image/png;base64,${res.data.avatar}`);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.error(error.response.data); // => the response payload
+          }
+        });
+    } else {
+      setUserAvatar(blank)
+    }
+
+  }
+
+  useEffect(() => {
+    getUserAvatar()
+  }, [user])
 
   useEffect(() => {
     if (isLogged != null) {
@@ -61,13 +93,14 @@ const App = () => {
             <Post {...props} user={user}/>
           )}/>
           <Route path="/user/:id" render={(props) => (
-            <UserPage {...props} user={user} getUser={getUser}/>
+            <UserPage {...props} user={user} getUser={getUser} userAvatar={userAvatar} setUserAvatar={setUserAvatar}/>
           )}/>
         </Switch>
       </Suspense>
       <CssBaseline/>
       <div className="App">
-        <TopBar isLogged={isLogged} setLogged={setLogged} user={user} setUser={setUser}/>
+        <TopBar isLogged={isLogged} setLogged={setLogged} user={user}
+                setUser={setUser} userAvatar={userAvatar} />
         <Navbar/>
         <Footer/>
       </div>

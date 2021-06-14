@@ -1,11 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {makeStyles, Grid, Typography, Button, Avatar, IconButton} from '@material-ui/core';
+import React from 'react';
+import {makeStyles, Grid, Typography, Button, Avatar} from '@material-ui/core';
 import logo from '../../icons/logo.png';
 
 import axios from "../../axios.config";
 import {useHistory, Link} from 'react-router-dom'
-import blank from "../../assets/images/blank.png";
-
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -52,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = ({isLogged, user, setUser}) => {
+const TopBar = ({isLogged, user, setUser, userAvatar}) => {
   const classes = useStyles();
   const history = useHistory()
-  const [userAvatar, setUserAvatar] = useState(blank)
+
   const logoutUser = () => {
     axios.post('v1/users/auth/logout/', {"Authorization": isLogged})
       .then(res => {
@@ -73,34 +71,6 @@ const TopBar = ({isLogged, user, setUser}) => {
       });
   }
 
-  const getUserAvatar = () => {
-
-    const config = {
-      headers: {
-        'Authorization': `Token ${localStorage.getItem('isLogged')}`,
-      }
-    }
-    if (user != null) {
-      axios.get(`v1/wishub/users/avatar/`, config)
-        .then(res => {
-          if (res.status === 200) {
-            setUserAvatar(`data:image/png;base64,${res.data.avatar}`);
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.error(error.response.data); // => the response payload
-          }
-        });
-    } else {
-      setUserAvatar(blank)
-    }
-
-  }
-
-  useEffect(() => {
-    getUserAvatar()
-  }, [user])
 
   return (
     <Grid className={classes.wrapper} container justify="space-between">
