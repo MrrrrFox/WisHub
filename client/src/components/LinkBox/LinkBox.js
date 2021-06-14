@@ -1,21 +1,24 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {Button, Grid, Dialog, DialogTitle, InputLabel, MenuItem, FormControl, Select} from '@material-ui/core';
+import {IconButton} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import LinkIcon from '@material-ui/icons/Link';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
 import {red} from '@material-ui/core/colors';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import axios from "../../axios.config";
 import blank from '../../assets/images/blank.png'
 import ReportIcon from '@material-ui/icons/Report';
-const {useState, useEffect} = React;
+import {AddComment} from "@material-ui/icons";
+import {useHistory} from 'react-router-dom'
+// const  = React;
+
 
 
 const useStyles = makeStyles(() => ({
@@ -32,6 +35,7 @@ const LinkBox = (props) => {
   const {id, description, link, author, numDownvoted, numUpvoted, level, created} = props.post;
   const user = props.user || null;
   const votes = props.votes;
+  const history = useHistory()
   const [upCount, setUpCount] = useState(numUpvoted);
   const [downCount, setDownCount] = useState(numDownvoted);
   const [colorVote, setColorVote] = useState('black');
@@ -153,7 +157,7 @@ const LinkBox = (props) => {
     }
   };
 
-  
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
@@ -170,92 +174,95 @@ const LinkBox = (props) => {
   };
 
   const report = () => {
-    const data = {'message' : value};
+    const data = {'message': value};
     const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
     axios.post(`v1/wishub/posts/${id}/report-post/`, data, config)
       .then(res => {
-        if(res.status === 200){
+        if (res.status === 200) {
           console.log('reported');
         }
       })
       .catch((error) => {
-        if( error.response ){
+        if (error.response) {
           console.log(error.response.data);
-          }
+        }
       });
       setOpen(false);
-  };
+};
 
-  const classes = useStyles();
+const classes = useStyles();
 
-  useEffect(() => {
-    votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
-  }, [upCount, downCount, votes, id]);
+useEffect(() => {
+  votes[id] === 'up' ? setColorVote('green') : votes[id] === 'down' ? setColorVote('red') : setColorVote('black');
+}, [upCount, downCount, votes, id]);
 
 
-  return (
+return (
 
-    <Grid item xs={8}>
-      <Card className={classes.root}>
-        <CardHeader
-          avatar={
-            //TODO alter with user profile image
-            <Avatar aria-label="recipe" className={classes.avatar} alt={`${author.username} profile image`} src={blank}/>
+  <Grid item xs={8}>
+    <Card className={classes.root}>
+      <CardHeader
+        avatar={
+          //TODO alter with user profile image
+          <Avatar aria-label="recipe" className={classes.avatar} alt={`${author.username} profile image`} src={blank}/>
 
-            // </Avatar>
-          }
-          style={{textAlign: 'end'}}
-          title={author.username}
-          subheader={date}
-        />
-        <CardContent>
-          <Typography>
-            Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {description}
+          // </Avatar>
+        }
+        style={{textAlign: 'end'}}
+        title={author.username}
+        subheader={date}
+      />
+      <CardContent>
+        <Typography>
+          Level: {level === "BE" ? "Beginner" : level === "IN" ? "Intermediate" : "Advanced"}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {description}
 
-          </Typography>
-        </CardContent>
-        <CardActions>
+        </Typography>
+      </CardContent>
+      <CardActions>
 
-          <IconButton aria-label="share" target={'_blank'} href={link}>
-            <LinkIcon/>
-          </IconButton>
-          <Button onClick={incrementCount}>
-            <ThumbUpIcon
-              style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
-          </Button>
-          <Button onClick={decrementCount}>
-            <ThumbDownIcon
-              style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
-            -{downCount}
-          </Button>
-          <Button onClick={showDialog}>
-            <ReportIcon style={{marginLeft: '70px'}}/>
-          </Button>
-        </CardActions>
-      </Card>
-      <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">Why you want to report this post?</DialogTitle>
-        <FormControl className={classes.select}>
-              <InputLabel>Why</InputLabel>
-                <Select onChange={whyReport}>
-                    <MenuItem value="spam">Spam</MenuItem>
-                    <MenuItem value="false">False info</MenuItem>
-                    <MenuItem value="notValid">Link is not valid</MenuItem>
-                </Select>
-                <Button 
-                variant="contained"
-                color="primary"
-                onClick={report}>
-                    Report
-                </Button>
-          </FormControl>
-      </Dialog>
-    </Grid>
+        <IconButton aria-label="share" target={'_blank'} href={link}>
+          <LinkIcon/>
+        </IconButton>
+        <Button onClick={incrementCount}>
+          <ThumbUpIcon
+            style={{color: colorVote === 'red' ? 'black' : colorVote}}/>+{upCount}
+        </Button>
+        <Button onClick={decrementCount}>
+          <ThumbDownIcon
+            style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
+          -{downCount}
+        </Button>
+        <Button onClick={showDialog}>
+          <ReportIcon style={{marginLeft: '70px'}}/>
+        </Button>
+        <IconButton onClick={() => history.push(`/post/${id}`)}>
+          <AddComment/>
+        </IconButton>
+      </CardActions>
+    </Card>
+    <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Why you want to report this post?</DialogTitle>
+      <FormControl className={classes.select}>
+        <InputLabel>Why</InputLabel>
+        <Select onChange={whyReport}>
+          <MenuItem value="spam">Spam</MenuItem>
+          <MenuItem value="false">False info</MenuItem>
+          <MenuItem value="notValid">Link is not valid</MenuItem>
+        </Select>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={report}>
+          Report
+        </Button>
+      </FormControl>
+    </Dialog>
+  </Grid>
 
-  );
+);
 };
 
 export default LinkBox;

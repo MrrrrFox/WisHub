@@ -4,7 +4,8 @@ import './App.scss';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withTheme from './hoc/withTheme';
-import {Posts, UserPage, HomePage} from './pages' // Post
+import {Posts, UserPage, HomePage, Post} from './pages' // Post
+
 import axios from "./axios.config";
 
 
@@ -49,7 +50,9 @@ const App = () => {
         <Route path="/posts/:id" render={(props) => (
           <Posts {...props} user={user}/>
         )}/>
-        <Route path="/posts/:id" component={Posts}/>
+        <Route path="/post/:id" render={(props) =>(
+          <Post {...props} user={user}/>
+        )}/>
         <Route path="/user/:id" render={(props) => (
           <UserPage {...props} user={user} getUser={getUser}/>
         )}/>
