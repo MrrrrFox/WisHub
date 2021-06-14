@@ -1,4 +1,4 @@
-from users.models import CustomUser
+from users.models import CustomUser, UserProfile
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import Post, Subject, Domain, Comment, UserVotes
@@ -8,9 +8,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, permission_classes
 from rest_framework import viewsets, status, permissions
 from rest_framework.views import APIView
-from django.core.mail import mail_admins
-
-from .utils import VoteType
+from django.core.mail import mail_admins, send_mail
+from .utils import VoteType, get_admins_mails
+from .custom_renderers import JPEGRenderer, PNGRenderer
+from wsgiref.util import FileWrapper
+import datetime
 
 
 # Create your views here.
@@ -46,6 +48,36 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author=pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+    @action(methods=['post'], detail=True, url_path='report-post')
+    @permission_classes([permissions.IsAuthenticated])
+    def report_post(self, request, pk=None):
+        desired_post = Post.objects.filter(id=pk).first()
+
+        message = f"""The following post has been reported: 
+                   {str(desired_post)}\n
+                   id: {desired_post.id}
+                   author: {CustomUser.objects.filter(id=desired_post.author_id).first()}
+                   created at: {desired_post.created}
+                   (up, down): ({desired_post.num_upvoted}, {desired_post.num_downvoted})
+
+                   with the following comment:\n
+                   {request.data.get('message')}\n
+                   date: {datetime.datetime.now()}
+                   reporter: {request.user.email}
+                   """
+
+        print(message)
+        send_mail(
+
+            subject="User message",
+            from_email=request.user.email,
+            message=message,
+            recipient_list=get_admins_mails()
+        )
+
+        return JsonResponse({"message": "post reported"}, safe=False)
 
     @action(methods=['post'], detail=True, url_path='vote-post')
     def vote_post(self, request, pk=None) -> JsonResponse:
@@ -234,10 +266,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     #     return JsonResponse(self.serializer_class(desired_comment).data, safe=False)
 
 
-# example view
-def my_view(request):
-    return HttpResponse('<h1>Page was found</h1>')
-
 
 # After Szumlak:
 def post_detail(request, year, month, day, post):
@@ -260,27 +288,68 @@ def post_detail(request, year, month, day, post):
 class MessageAdmin(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        print(request.user)
-        print(request.user.id)
-        return Response({"elo":"mordo"}, status.HTTP_200_OK)
-
     def post(self, request, *args, **kwargs):
+        print(request.data.get("message"))
 
-        # mail_admins(
-        #     subject="User message",
-        #     message=request.get("message")
-        # )
-        print(request.get("message"))
+        send_mail(
+            subject="User message",
+            from_email=request.user.email,
+            message=request.data.get("message"), 
+            recipient_list=get_admins_mails()
+        )
 
-        return Response(
-            {
-                "message": "Message sent"
-            },
+        return JsonResponse( 
+            { "message": "Message sent" },
             status=status.HTTP_200_OK
         )
 
 
+class UsersAvatars(APIView):
+    renderer_classes = [JPEGRenderer, PNGRenderer]
+
+    def get(self, request, *args, **kwargs):
+        
+        return Response(
+            FileWrapper(
+                UserProfile\
+                    .get_or_create(
+                        user=CustomUser.objects.get(
+                            id=kwargs.pop("id")
+                    ))\
+                    .avatar\
+                    .open()
+            )
+        )
+
+class CurrentUserAvatar(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [JPEGRenderer, PNGRenderer]
+
+    def get(self, request, *args, **kwargs):
+        
+
+        return Response(
+            FileWrapper(
+                UserProfile\
+                    .objects\
+                    .get(user=request.user)\
+                    .avatar\
+                    .open()
+            )
+        )
+
+    def post(self, request, *args, **kwargs):
+
+        UserProfile.create_or_update(
+            user=request.user,
+            avatar=request.FILES.get("avatar")
+        )
+
+        return JsonResponse( 
+            { "message": "Avatar set" },
+            status=status.HTTP_200_OK
+        )
 class UserVoted(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
@@ -289,7 +358,6 @@ class UserVoted(APIView):
         """
         Returns information about all posts voted by the user.
         Gives information about type of votes.
-        pk in the route is a user id
         """
 
         post_dict = {_.post.id: _.vote_type
