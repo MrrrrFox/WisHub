@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import requests
+from typing import List
+from users.models import CustomUser
 
 
 class VoteType(models.TextChoices):
@@ -14,3 +16,11 @@ def url_validator(link: str) -> None:
             raise ValidationError("Wrong url")
     except Exception:
         raise ValidationError("Wrong url")
+
+
+def get_admins_mails() -> List[str]:
+        return list(map(
+            lambda x: x[0], 
+            CustomUser.objects.filter(is_superuser=True).values_list("email"))
+        )
+

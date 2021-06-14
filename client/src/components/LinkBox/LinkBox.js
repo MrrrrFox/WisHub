@@ -1,7 +1,7 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {Button, Grid} from '@material-ui/core';
+import {Button, Grid, Dialog, DialogTitle, InputLabel, MenuItem, FormControl, Select} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import LinkIcon from '@material-ui/icons/Link';
@@ -14,6 +14,7 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import axios from "../../axios.config";
 import blank from '../../assets/images/blank.png'
+import ReportIcon from '@material-ui/icons/Report';
 const {useState, useEffect} = React;
 
 
@@ -152,6 +153,39 @@ const LinkBox = (props) => {
     }
   };
 
+  
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+
+  const showDialog = () => {
+    setOpen(true);
+  };
+
+  const closeDialog = () => {
+    setOpen(false);
+  };
+
+  const whyReport = (e) => {
+    setValue(e.target.value);
+  };
+
+  const report = () => {
+    const data = {'message' : value};
+    const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
+    axios.post(`v1/wishub/posts/${id}/report-post/`, data, config)
+      .then(res => {
+        if(res.status === 200){
+          console.log('reported');
+        }
+      })
+      .catch((error) => {
+        if( error.response ){
+          console.log(error.response.data);
+          }
+      });
+      setOpen(false);
+  };
+
   const classes = useStyles();
 
   useEffect(() => {
@@ -197,8 +231,28 @@ const LinkBox = (props) => {
               style={{color: colorVote === 'green' ? 'black' : colorVote}}/>
             -{downCount}
           </Button>
+          <Button onClick={showDialog}>
+            <ReportIcon style={{marginLeft: '70px'}}/>
+          </Button>
         </CardActions>
       </Card>
+      <Dialog onClose={closeDialog} aria-labelledby="simple-dialog-title" open={open}>
+        <DialogTitle id="simple-dialog-title">Why you want to report this post?</DialogTitle>
+        <FormControl className={classes.select}>
+              <InputLabel>Why</InputLabel>
+                <Select onChange={whyReport}>
+                    <MenuItem value="spam">Spam</MenuItem>
+                    <MenuItem value="false">False info</MenuItem>
+                    <MenuItem value="notValid">Link is not valid</MenuItem>
+                </Select>
+                <Button 
+                variant="contained"
+                color="primary"
+                onClick={report}>
+                    Report
+                </Button>
+          </FormControl>
+      </Dialog>
     </Grid>
 
   );
