@@ -329,7 +329,7 @@ class CurrentUserAvatar(APIView):
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        with open(str(UserProfile.objects.get(user=request.user).avatar), "rb") as f:
+        with open(str(UserProfile.get_or_create(user=request.user).avatar), "rb") as f:
             image_data = base64.b64encode(f.read()).decode('utf-8')
 
         return JsonResponse(
@@ -340,7 +340,7 @@ class CurrentUserAvatar(APIView):
     def post(self, request, *args, **kwargs):
         UserProfile.create_or_update(
             user=request.user,
-            avatar=request.FILES.get("avatar")
+            avatar=request.FILES["avatar"]
         )
 
         return JsonResponse(

@@ -4,6 +4,7 @@ from ..models import Domain, Post
 from rest_framework import status
 from rest_framework.test import force_authenticate, APIRequestFactory
 from ..views import CurrentUserAvatar, MessageAdmin, UserVoted
+from django.utils.datastructures import MultiValueDictKeyError
 import json
 
 
@@ -45,7 +46,7 @@ class TestCurrentUserAvatar(TestSetUp):
     def test_post_without_image(self):
 
         self.assertRaises(
-            ValueError,
+            MultiValueDictKeyError,
             lambda : self.post_authenticated( f"/api/v1/wishub/domains/", CurrentUserAvatar.as_view())
         )
 
@@ -53,7 +54,6 @@ class TestUsersAvatars(TestSetUp):
 
     def test_get_user_avatar(self):
         response = self.client.get(f"/api/v1/wishub/users/{self.user.id}/avatar")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
    
 class TestMessageAdmin(TestSetUp):
