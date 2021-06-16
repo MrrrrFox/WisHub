@@ -8,19 +8,21 @@ import Button from "@material-ui/core/Button";
 import SendIcon from '@material-ui/icons/Send';
 
 const MessageAdmin = () => {
-  const { handleSubmit, control, reset } = useForm();
+  const { handleSubmit, control, setValue} = useForm();
 
   // TODO add proper endpoint
   const handleSendingMessage = (data) => {
-    axios.post(`v1/wishub/admin-message/`, data)
+    const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
+    axios.post(`v1/wishub/contact-admin/`, data, config)
       .then(res => {
+        console.log(res.status)
         if(res.status === 200){
-          reset()
+          setValue('message', '')
         }
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           }
       });
   }
@@ -31,9 +33,7 @@ const MessageAdmin = () => {
           Send message to administration
       </Typography>
         <FormProvider { ...handleSubmit }>
-        <form
-          onSubmit = {handleSubmit(handleSendingMessage)}
-        >
+        <form onSubmit = {handleSubmit(handleSendingMessage)}>
           <Controller
             render = {({field})=> (
                 <TextField {...field}
@@ -44,7 +44,9 @@ const MessageAdmin = () => {
                            variant={"outlined"}
                            label="Type your message here"
                            required
+                           onChange={(e) => field.onChange(e)}
                            value={field.value}
+                           inputProps={{maxLength: 300}}
                 />
             )}
             name="message"

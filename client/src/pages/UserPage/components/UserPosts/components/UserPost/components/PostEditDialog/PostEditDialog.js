@@ -29,7 +29,7 @@ const PostEditDialog = ({open, setOpen, post, fetchUserPosts}) => {
       })
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data);
+          console.error(error.response.data);
           }
       });
   }
@@ -40,7 +40,7 @@ const PostEditDialog = ({open, setOpen, post, fetchUserPosts}) => {
 
 
   const handleEdit = (data) => {
-
+    data.author = data.author.id
     axios.put(`v1/wishub/posts/${data.id}/`, data)
       .then(res => {
         if(res.status){
@@ -49,7 +49,7 @@ const PostEditDialog = ({open, setOpen, post, fetchUserPosts}) => {
       }).then(() => setOpen(false))
       .catch((error) => {
         if( error.response ){
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
           }
       });
   }

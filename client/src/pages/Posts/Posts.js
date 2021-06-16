@@ -6,18 +6,9 @@ import {LinkBox, Sort} from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   main: {
-    width: `${theme.feedWidth}px`,
+    width: `${theme.feedWidth}`,
     minHeight: '100vh',
     margin: '0 auto',
-  },
-  loader: {
-    position: 'absolute',
-    left: '50%',
-    top: '40vh',
-    width: '100px',
-    height: '100px',
-
-    transform: 'translateX(-50%)',
   },
 }));
 
@@ -29,6 +20,7 @@ const Posts = ({user}) => {
   const {id} = useParams();
 
   const fetchPosts = () => {
+
     axios.get(`v1/wishub/posts/${id}/by-subject`)
       .then(res => {
         if (res.status === 200) {
@@ -39,24 +31,25 @@ const Posts = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
   }
 
   const fetchVotes = () => {
+
     if (user != null) {
       const config = {headers: {'Authorization': `Token ${localStorage.getItem('isLogged')}`}}
       axios.get(`v1/wishub/user-voted-posts`, config)
         .then(res => {
           if (res.status === 200) {
+            console.log(res.data)
             setVotes(res.data);
-            //console.log(res.data);
           }
         })
         .catch((error) => {
           if (error.response) {
-            console.log(error.response.data);
+            console.error(error.response.data);
           }
         });
     }
@@ -65,8 +58,12 @@ const Posts = ({user}) => {
 
   useEffect(() => {
     fetchPosts();
-    fetchVotes();
+
   }, [id]);
+
+  useEffect(() => {
+    fetchVotes();
+  },[user])
 
   const onSort = (e) => {
     setPosts([...e]);
@@ -76,26 +73,30 @@ const Posts = ({user}) => {
   return (
     <Grid
       container
-      justify="flex-start"
-      direction="row"
+      direction="column"
       className={classes.main}
+      spacing={6}
+      alignContent={"center"}
     >
-      <Grid
-        container
-        justify="flex-start"
-        direction="column"
-      >
+      <Grid item >
         <Sort posts={orgPosts} onSort={onSort}/>
       </Grid>
       <Grid
+        item xs={10}
         container
-        direction="column"
+        direction="row"
         id="postsList"
         alignContent={"center"}
-        spacing={2}
+        spacing={3}
+        justify={"space-between"}
+
       >
         {posts
-          ? posts.map((post) => <LinkBox key={post.id} post={post} user={user} votes={votes}/>) : null
+          ? posts.map((post) =>
+            <Grid item key={post.id}>
+              <LinkBox key={post.id} post={post} user={user} votes={votes}/>
+            </Grid>) :
+          null
         }
       </Grid>
     </Grid>

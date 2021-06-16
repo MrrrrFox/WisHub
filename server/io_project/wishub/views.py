@@ -13,7 +13,7 @@ from .utils import VoteType, get_admins_mails
 from .custom_renderers import JPEGRenderer, PNGRenderer
 from wsgiref.util import FileWrapper
 import datetime
-
+import base64
 
 # Create your views here.
 
@@ -48,7 +48,6 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(author=pk)
         serializer = PostSerializer(posts, many=True)
         return JsonResponse(serializer.data, safe=False)
-
 
     @action(methods=['post'], detail=True, url_path='report-post')
     @permission_classes([permissions.IsAuthenticated])
@@ -266,7 +265,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     #     return JsonResponse(self.serializer_class(desired_comment).data, safe=False)
 
 
-
 # After Szumlak:
 def post_detail(request, year, month, day, post):
     """Getting the post info by passing creation dates"""
@@ -294,12 +292,12 @@ class MessageAdmin(APIView):
         send_mail(
             subject="User message",
             from_email=request.user.email,
-            message=request.data.get("message"), 
+            message=request.data.get("message"),
             recipient_list=get_admins_mails()
         )
 
-        return JsonResponse( 
-            { "message": "Message sent" },
+        return JsonResponse(
+            {"message": "Message sent"},
             status=status.HTTP_200_OK
         )
 
@@ -308,49 +306,50 @@ class UsersAvatars(APIView):
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        
-        return Response(
-            FileWrapper(
-                UserProfile\
-                    .get_or_create(
-                        user=CustomUser.objects.get(
-                            id=kwargs.pop("id")
-                    ))\
-                    .avatar\
-                    .open()
-            )
+        # return Response(
+        #     FileWrapper(
+        #         UserProfile.get_or_create(
+        #             user=CustomUser.objects.get(
+        #                 id=kwargs.pop("id")
+        #             )
+        #         ).avatar.open()
+        #     )
+        # )
+
+        with open(str(UserProfile.get_or_create(user=CustomUser.objects.get(id=kwargs.pop("id"))).avatar), "rb") as f:
+            image_data = base64.b64encode(f.read()).decode('utf-8')
+        return JsonResponse(
+            {"avatar": image_data},
+            status=status.HTTP_200_OK
         )
 
-class CurrentUserAvatar(APIView):
 
+class CurrentUserAvatar(APIView):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [JPEGRenderer, PNGRenderer]
 
     def get(self, request, *args, **kwargs):
-        
+        with open(str(UserProfile.objects.get(user=request.user).avatar), "rb") as f:
+            image_data = base64.b64encode(f.read()).decode('utf-8')
 
-        return Response(
-            FileWrapper(
-                UserProfile\
-                    .get_or_create(user=request.user)\
-                    .avatar\
-                    .open()
-            )
+        return JsonResponse(
+            {"avatar": image_data},
+            status=status.HTTP_200_OK
         )
 
     def post(self, request, *args, **kwargs):
-
         UserProfile.create_or_update(
             user=request.user,
             avatar=request.FILES.get("avatar")
         )
 
-        return JsonResponse( 
-            { "message": "Avatar set" },
+        return JsonResponse(
+            {"message": "Avatar set"},
             status=status.HTTP_200_OK
         )
-class UserVoted(APIView):
 
+
+class UserVoted(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):

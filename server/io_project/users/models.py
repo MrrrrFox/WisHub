@@ -14,12 +14,13 @@ class CustomUser(AbstractUser):
         return self.email
 
 class UserProfile(models.Model):
-    user   = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="avatars", default="avatars/default_avatar.png")
 
     def save(self, *args, **kwargs):
 
-        self.avatar = make_thumbnail(self.avatar)
+        # self.avatar = make_thumbnail(self.avatar)
+        self.avatar = self.avatar
         super().save(*args, **kwargs)
 
     @staticmethod

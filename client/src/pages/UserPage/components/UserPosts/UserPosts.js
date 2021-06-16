@@ -3,7 +3,7 @@ import axios from "../../../../axios.config";
 import {UserPost} from './components'
 import {Grid} from "@material-ui/core";
 
-const UserPosts = ({user}) => {
+const UserPosts = ({user, rerender}) => {
   const [userPosts, setUserPosts] = useState(null)
   const [votes, setVotes] = useState({})
 
@@ -17,7 +17,7 @@ const UserPosts = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data); // => the response payload
+          console.error(error.response.data); // => the response payload
         }
       });
   }
@@ -32,7 +32,7 @@ const UserPosts = ({user}) => {
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
+          console.error(error.response.data);
         }
       });
   }
@@ -40,11 +40,17 @@ const UserPosts = ({user}) => {
     fetchUserPosts();
     fetchVotes();
   }, []);
+
+  useEffect(() => {
+    setUserPosts(null)
+    fetchUserPosts();
+  }, [rerender]);
+
   return (
     <Grid
       container
       id="postsList"
-      justify="space-around"
+      justify="flex-start"
       item xs={12}
       alignContent={"center"}
       direction={"column"}
