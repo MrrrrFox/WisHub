@@ -1,3 +1,4 @@
+from wishub.views import PostViewSet
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.db import IntegrityError
@@ -108,6 +109,55 @@ class PostTestCases(TestSetUp):
             )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_post_unvote(self):
+        data = {
+            "user_id": self.user.id,
+            "vote_type": "up"
+        }
+
+        old_num_upvotes = self.post.num_upvoted
+        response = self.client.post(
+            f"/api/v1/wishub/posts/{self.post.id}/vote-post/", 
+            data=data
+            )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(old_num_upvotes + 1, self.post.num_upvoted)
+
+        response = self.client.post(
+            f"/api/v1/wishub/posts/{self.post.id}/unvote-post/", 
+            data={ "user_id": self.user.id }
+            )
+
+        self.assertEqual(old_num_upvotes, self.post.num_upvoted)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_report_post(self):
+        client, _ = self.login()
+        response = client.post(
+            f"/api/v1/wishub/posts/{self.post.id}/report-post/", 
+            data={
+                "message": "massage"
+            }
+            )
+
+        message = json.loads(response.content).get("message")
+
+        self.assertEqual(message, "post reported")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_report_post_non_authenticated(self):
+        self.assertRaises(
+            AttributeError, 
+            lambda : self.client.post(
+                f"/api/v1/wishub/posts/{self.post.id}/report-post/", 
+                data={
+                    "message": "massage"
+                }
+                )
+        )
 
 class CommentsTestCases(TestSetUp):
 

@@ -332,8 +332,7 @@ class CurrentUserAvatar(APIView):
         return Response(
             FileWrapper(
                 UserProfile\
-                    .objects\
-                    .get(user=request.user)\
+                    .get_or_create(user=request.user)\
                     .avatar\
                     .open()
             )
