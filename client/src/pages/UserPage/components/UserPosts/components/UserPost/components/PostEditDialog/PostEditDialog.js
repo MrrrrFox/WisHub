@@ -40,7 +40,7 @@ const PostEditDialog = ({open, setOpen, post, fetchUserPosts}) => {
 
 
   const handleEdit = (data) => {
-
+    data.author = data.author.id
     axios.put(`v1/wishub/posts/${data.id}/`, data)
       .then(res => {
         if(res.status){
