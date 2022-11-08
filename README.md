@@ -41,6 +41,8 @@ https://wishub.herokuapp.com/
 
 ![](Wishub-stack.png)
 
+Update 8.11.2022
+Starting from November 28, 2022 free plans on Heroku, including the free dynos on which WisHub runs are no longer available. New method of deployment is needed for the app to keep running.
 
 *Readme written by Tymoteusz Ciesielski* \
 04-09-2021
